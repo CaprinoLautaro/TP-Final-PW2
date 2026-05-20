@@ -1,0 +1,38 @@
+{{>header}}
+<div class="container">
+
+    <div style="text-align: center;">
+        <a href="/vikingo/alta" class="btn-add">⚔️ RECLUTAR NUEVO GUERRERO</a>
+    </div>
+
+    <table>
+        <thead>
+        <tr>
+            <th>ID</th>
+            <th>Nombre</th>
+            <th>Apodo</th>
+            <th>Clan</th>
+            <th>Fuerza</th>
+            <th>Acciones</th>
+        </tr>
+        </thead>
+        <tbody>
+        {{#guerreros}}
+        <tr>
+            <td>{{id}}</td>
+            <td style="font-weight: 600; color: #fff;">{{nombre}}</td>
+            <td>{{apodo}}</td>
+            <td>{{clan}}</td>
+            <td><span class="fuerza-icon">🪓</span> {{fuerza}}</td>
+            <td class="actions">
+                <a href="/vikingo/editar?id={{id}}" class="edit">Editar</a>
+                <a href="/vikingo/eliminar?id={{id}}" class="delete"
+                   onclick="return confirm('¿Enviar al exilio?')">Destituir</a>
+            </td>
+        </tr>
+        {{/guerreros}}
+        </tbody>
+    </table>
+
+</div>
+{{>footer}}
