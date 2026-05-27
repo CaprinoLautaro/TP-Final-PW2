@@ -14,3 +14,47 @@
 [01:25:12] [INFO] SQL: SELECT * FROM guerreros
 [01:25:13] [INFO] VikingoController::ver
 [01:25:13] [INFO] SQL: SELECT * FROM guerreros
+[01:26:25] [INFO] VikingoController::editar - id=12
+[01:26:25] [INFO] SQL: SELECT * FROM guerreros WHERE id = ? [12]
+[01:26:26] [INFO] VikingoController::ver
+[01:26:26] [INFO] SQL: SELECT * FROM guerreros
+[01:26:27] [INFO] VikingoController::procesarEditar - id=12 nombre=Gunnhild
+[01:26:27] [INFO] SQL: UPDATE guerreros SET nombre = ?, apodo = ?, clan = ?, fuerza = ? WHERE id = ? [Gunnhild, Madre de Reyes, Kattegat, 90, 12]
+[01:26:27] [INFO] VikingoController::ver
+[01:26:27] [INFO] SQL: SELECT * FROM guerreros
+[01:27:54] [INFO] VikingoController::ver
+[01:27:54] [INFO] SQL: SELECT * FROM guerreros
+[01:27:58] [INFO] VikingoController::procesarEditar - id=12 nombre=Gunnhild
+[01:27:58] [INFO] SQL: UPDATE guerreros SET nombre = ?, apodo = ?, clan = ?, fuerza = ? WHERE id = ? [Gunnhild, Madre de Reyes, Kattegat, 10, 12]
+[01:27:58] [INFO] VikingoController::ver
+[01:27:58] [INFO] SQL: SELECT * FROM guerreros
+[01:28:05] [INFO] VikingoController::ver
+[01:28:05] [INFO] SQL: SELECT * FROM guerreros
+[01:28:44] [INFO] VikingoController::ver
+[01:28:44] [INFO] SQL: SELECT * FROM guerreros
+[01:28:45] [INFO] VikingoController::procesarEditar - id=12 nombre=Gunnhild
+[01:28:45] [INFO] SQL: UPDATE guerreros SET nombre = ?, apodo = ?, clan = ?, fuerza = ? WHERE id = ? [Gunnhild, Madre de Reyes, Kattegat, 10, 12]
+[01:28:45] [INFO] VikingoController::ver
+[01:28:45] [INFO] SQL: SELECT * FROM guerreros
+[01:28:45] [INFO] VikingoController::ver
+[01:28:45] [INFO] SQL: SELECT * FROM guerreros
+[01:28:47] [INFO] VikingoController::editar - id=10
+[01:28:47] [INFO] SQL: SELECT * FROM guerreros WHERE id = ? [10]
+[01:28:47] [INFO] VikingoController::ver
+[01:28:47] [INFO] SQL: SELECT * FROM guerreros
+[01:28:50] [INFO] VikingoController::procesarEditar - id=10 nombre=Halfdan
+[01:28:50] [INFO] SQL: UPDATE guerreros SET nombre = ?, apodo = ?, clan = ?, fuerza = ? WHERE id = ? [Halfdan, El Negro, Noruega, 50, 10]
+[01:28:50] [INFO] VikingoController::ver
+[01:28:50] [INFO] SQL: SELECT * FROM guerreros
+[01:28:50] [INFO] VikingoController::ver
+[01:28:50] [INFO] SQL: SELECT * FROM guerreros
+[01:28:52] [INFO] VikingoController::editar - id=1
+[01:28:52] [INFO] SQL: SELECT * FROM guerreros WHERE id = ? [1]
+[01:28:52] [INFO] VikingoController::ver
+[01:28:52] [INFO] SQL: SELECT * FROM guerreros
+[01:28:54] [INFO] VikingoController::procesarEditar - id=1 nombre=Bjorn
+[01:28:54] [INFO] SQL: UPDATE guerreros SET nombre = ?, apodo = ?, clan = ?, fuerza = ? WHERE id = ? [Bjorn, Brazo de Hierro, Kattegat, 10, 1]
+[01:28:54] [INFO] VikingoController::ver
+[01:28:54] [INFO] SQL: SELECT * FROM guerreros
+[01:28:54] [INFO] VikingoController::ver
+[01:28:54] [INFO] SQL: SELECT * FROM guerreros

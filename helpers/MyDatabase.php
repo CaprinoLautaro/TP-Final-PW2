@@ -22,8 +22,15 @@ class MyDatabase
     public function execute($sql, $params = [])
     {
         $stmt = $this->conexion->prepare($sql);
-        $stmt->execute($params);
-        return $this->conexion->affected_rows;
+
+        if (!empty($params)) {
+            $types = str_repeat("s", count($params));
+            $stmt->bind_param($types, ...$params);
+        }
+
+        $stmt->execute();
+
+        return $stmt->affected_rows;
     }
 
     public function __destruct()
