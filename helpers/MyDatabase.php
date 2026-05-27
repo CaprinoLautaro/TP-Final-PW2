@@ -12,7 +12,10 @@ class MyDatabase
     public function query($sql, $params = [])
     {
         $stmt = $this->conexion->prepare($sql);
-        $stmt->execute($params);
+        if (!empty($params)) {
+            $stmt->bind_param(str_repeat('s', count($params)), ...$params);
+        }
+        $stmt->execute();
         return $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
     }
 
