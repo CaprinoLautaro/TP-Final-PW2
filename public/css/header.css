@@ -1,0 +1,87 @@
+/* ── HEADER ── */
+header {
+    background: var(--surface);
+    border-bottom: 2px solid var(--accent);
+    padding: 0 1.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 64px;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+}
+
+.logo {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 2rem;
+    letter-spacing: 2px;
+    color: var(--accent);
+    text-decoration: none;
+}
+
+.header-right {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+/* ── PERFIL ── */
+.header-perfil {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+}
+
+.avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: var(--accent);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 800;
+    font-size: 1rem;
+    color: #fff;
+    text-decoration: none;
+    transition: filter 0.15s;
+    flex-shrink: 0;
+}
+
+.avatar:hover {
+    filter: brightness(1.15);
+}
+
+.header-username {
+    font-weight: 700;
+    font-size: 0.95rem;
+}
+
+/* ── CERRAR SESIÓN ── */
+.header-logout {
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: var(--muted);
+    text-decoration: none;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    transition: color 0.15s;
+    border-left: 1px solid #2a2a4a;
+    padding-left: 1.5rem;
+}
+
+.header-logout:hover {
+    color: var(--accent);
+}
+
+/* ── RESPONSIVE ── */
+@media (max-width: 600px) {
+    .header-username {
+        display: none;
+    }
+
+    .logo {
+        font-size: 1.6rem;
+    }
+}
