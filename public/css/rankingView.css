@@ -21,13 +21,17 @@ body {
     color: var(--text);
     font-family: 'Nunito', sans-serif;
     min-height: 100vh;
+    display: flex;
+    flex-direction: column;
 }
 
 /* ── MAIN ── */
 main {
+    width: 100%;
     max-width: 860px;
-    margin: 0 auto;
+    align-self: center;
     padding: 2rem 1.25rem 4rem;
+    flex: 1;
 }
 
 /* ── CABECERA DE SECCIÓN ── */
