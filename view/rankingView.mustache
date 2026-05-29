@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Preguntados - Ranking</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="./public/css/rankingView.css">
+</head>
+
+<body>
+
+{{> header}}
+
+<main>
+
+    <div class="ranking-header">
+        <div>
+            <div class="section-title">🏆 Ranking global</div>
+            <p class="ranking-sub">Puntajes acumulados de todos los jugadores</p>
+        </div>
+
+        <a href="?controller=home&method=index" class="btn-volver">
+            ← Volver
+        </a>
+    </div>
+
+    <div class="ranking-list">
+
+        {{#jugadores}}
+            <a href="?controller=perfil&method=ver&id={{id}}" class="ranking-card">
+
+                <div class="ranking-pos {{#top3}}top3{{/top3}}">
+                    {{posicion}}
+                </div>
+
+                <div class="ranking-avatar">
+                    {{inicial}}
+                </div>
+
+                <div class="ranking-info">
+                    <div class="ranking-nombre">{{nombre_usuario}}</div>
+                    <div class="ranking-detalle">{{partidas_jugadas}} partidas jugadas</div>
+                </div>
+
+                <div class="ranking-puntaje">
+                    <div class="ranking-pts">{{puntaje_total}}</div>
+                    <div class="ranking-pts-label">puntos</div>
+                </div>
+
+            </a>
+        {{/jugadores}}
+
+        {{^jugadores}}
+            <div class="empty">
+                <strong>Todavía no hay jugadores en el ranking</strong>
+                <p>¡Jugá tu primera partida y sé el primero!</p>
+            </div>
+        {{/jugadores}}
+
+    </div>
+
+</main>
+
+{{> footer}}
+
+</body>
+</html>

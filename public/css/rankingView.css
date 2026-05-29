@@ -1,0 +1,190 @@
+/* ── BASE (mismas variables que el resto del proyecto) ── */
+*, *::before, *::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+:root {
+    --bg:        #0f0f1a;
+    --surface:   #1a1a2e;
+    --card:      #16213e;
+    --accent:    #e94560;
+    --accent2:   #f5a623;
+    --text:      #eaeaea;
+    --muted:     #7a7a9a;
+    --radius:    14px;
+}
+
+body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Nunito', sans-serif;
+    min-height: 100vh;
+}
+
+/* ── MAIN ── */
+main {
+    max-width: 860px;
+    margin: 0 auto;
+    padding: 2rem 1.25rem 4rem;
+}
+
+/* ── CABECERA DE SECCIÓN ── */
+.ranking-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 1.5rem;
+    flex-wrap: wrap;
+    gap: 1rem;
+}
+
+.section-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.6rem;
+    letter-spacing: 1px;
+    color: var(--text);
+    text-transform: uppercase;
+    margin-bottom: 0.2rem;
+}
+
+.ranking-sub {
+    font-size: 0.85rem;
+    color: var(--muted);
+}
+
+.btn-volver {
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: var(--muted);
+    text-decoration: none;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    transition: color 0.15s;
+}
+
+.btn-volver:hover {
+    color: var(--text);
+}
+
+/* ── LISTA ── */
+.ranking-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+/* ── CARD DE JUGADOR ── */
+.ranking-card {
+    background: var(--card);
+    border-radius: var(--radius);
+    padding: 1rem 1.25rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    text-decoration: none;
+    color: var(--text);
+    border-left: 4px solid transparent;
+    transition: filter 0.15s, border-left-color 0.15s;
+}
+
+.ranking-card:hover {
+    filter: brightness(1.1);
+    border-left-color: var(--accent);
+}
+
+/* ── POSICIÓN ── */
+.ranking-pos {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.4rem;
+    color: var(--muted);
+    min-width: 2rem;
+    text-align: center;
+    line-height: 1;
+}
+
+.ranking-pos.top3 {
+    color: var(--accent2);
+}
+
+/* ── AVATAR ── */
+.ranking-avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: var(--accent);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 800;
+    font-size: 1rem;
+    color: #fff;
+    flex-shrink: 0;
+}
+
+/* ── INFO ── */
+.ranking-info {
+    flex: 1;
+    min-width: 0;
+}
+
+.ranking-nombre {
+    font-weight: 700;
+    font-size: 0.95rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.ranking-detalle {
+    font-size: 0.78rem;
+    color: var(--muted);
+    margin-top: 2px;
+}
+
+/* ── PUNTAJE ── */
+.ranking-puntaje {
+    text-align: right;
+    flex-shrink: 0;
+}
+
+.ranking-pts {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.6rem;
+    line-height: 1;
+    color: var(--accent2);
+}
+
+.ranking-pts-label {
+    font-size: 0.7rem;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+/* ── ESTADO VACÍO ── */
+.empty {
+    text-align: center;
+    padding: 2.5rem;
+    color: var(--muted);
+    background: var(--card);
+    border-radius: var(--radius);
+}
+
+.empty p {
+    font-size: 0.95rem;
+    margin-top: 0.5rem;
+}
+
+/* ── RESPONSIVE ── */
+@media (max-width: 480px) {
+    .ranking-card {
+        gap: 0.75rem;
+        padding: 0.9rem 1rem;
+    }
+
+    .ranking-detalle {
+        display: none;
+    }
+}
