@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Preguntados - Lobby</title>
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+        :root {
+            --bg:        #0f0f1a;
+            --surface:   #1a1a2e;
+            --card:      #16213e;
+            --accent:    #e94560;
+            --accent2:   #f5a623;
+            --text:      #eaeaea;
+            --muted:     #7a7a9a;
+            --radius:    14px;
+        }
+
+        body {
+            background: var(--bg);
+            color: var(--text);
+            font-family: 'Nunito', sans-serif;
+            min-height: 100vh;
+        }
+
+        /* ── HEADER ── */
+        header {
+            background: var(--surface);
+            border-bottom: 2px solid var(--accent);
+            padding: 0 1.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            height: 64px;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .logo {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 2rem;
+            letter-spacing: 2px;
+            color: var(--accent);
+        }
+
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: var(--accent);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 800;
+            font-size: 1rem;
+            color: #fff;
+        }
+
+        .header-username {
+            font-weight: 700;
+            font-size: 0.95rem;
+        }
+
+        /* ── MAIN ── */
+        main {
+            max-width: 860px;
+            margin: 0 auto;
+            padding: 2rem 1.25rem 4rem;
+        }
+
+        /* ── BIENVENIDA ── */
+        .welcome-card {
+            background: linear-gradient(135deg, var(--accent) 0%, #c0392b 100%);
+            border-radius: var(--radius);
+            padding: 2rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 1.75rem;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .welcome-card h1 {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 2rem;
+            letter-spacing: 1px;
+            line-height: 1.1;
+        }
+
+        .welcome-card h1 span {
+            display: block;
+            font-family: 'Nunito', sans-serif;
+            font-size: 1rem;
+            font-weight: 600;
+            opacity: 0.85;
+            margin-bottom: 4px;
+        }
+
+        .puntaje-badge {
+            background: rgba(0,0,0,0.25);
+            border-radius: 10px;
+            padding: 0.75rem 1.25rem;
+            text-align: center;
+        }
+
+        .puntaje-badge .num {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 2.5rem;
+            line-height: 1;
+            color: var(--accent2);
+        }
+
+        .puntaje-badge .label {
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            opacity: 0.8;
+        }
+
+        /* ── BOTONES PRINCIPALES ── */
+        .actions {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .btn-main {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.6rem;
+            padding: 1.1rem;
+            border-radius: var(--radius);
+            font-family: 'Nunito', sans-serif;
+            font-size: 1rem;
+            font-weight: 800;
+            cursor: pointer;
+            border: none;
+            text-decoration: none;
+            transition: transform 0.15s, filter 0.15s;
+        }
+
+        .btn-main:active { transform: scale(0.97); }
+        .btn-main:hover  { filter: brightness(1.1); }
+
+        .btn-jugar {
+            background: var(--accent);
+            color: #fff;
+            font-size: 1.15rem;
+        }
+
+        .btn-ranking {
+            background: var(--card);
+            color: var(--text);
+            border: 2px solid var(--muted);
+        }
+
+        /* ── SECCIÓN PARTIDAS ── */
+        .section-title {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 1.4rem;
+            letter-spacing: 1px;
+            color: var(--muted);
+            text-transform: uppercase;
+            margin-bottom: 1rem;
+        }
+
+        .partidas-list {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+
+        .partida-card {
+            background: var(--card);
+            border-radius: var(--radius);
+            padding: 1rem 1.25rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-left: 4px solid var(--muted);
+            gap: 1rem;
+        }
+
+        .partida-card.ganada  { border-left-color: #2ecc71; }
+        .partida-card.perdida { border-left-color: var(--accent); }
+
+        .partida-info .fecha {
+            font-size: 0.78rem;
+            color: var(--muted);
+            margin-bottom: 3px;
+        }
+
+        .partida-info .detalle {
+            font-weight: 700;
+            font-size: 0.95rem;
+        }
+
+        .partida-resultado {
+            text-align: right;
+        }
+
+        .partida-resultado .ptos {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 1.6rem;
+            line-height: 1;
+        }
+
+        .partida-resultado .ptos.ganada  { color: #2ecc71; }
+        .partida-resultado .ptos.perdida { color: var(--accent); }
+
+        .partida-resultado .sub {
+            font-size: 0.7rem;
+            color: var(--muted);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        /* ── ESTADO VACÍO ── */
+        .empty {
+            text-align: center;
+            padding: 2.5rem;
+            color: var(--muted);
+            background: var(--card);
+            border-radius: var(--radius);
+        }
+
+        .empty p { font-size: 0.95rem; margin-top: 0.5rem; }
+
+        /* ── TRAMPITAS ── */
+        .trampitas-bar {
+            background: var(--card);
+            border-radius: var(--radius);
+            padding: 0.9rem 1.25rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 1.75rem;
+            border: 1px solid #2a2a4a;
+        }
+
+        .trampitas-bar .info {
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+            font-weight: 700;
+        }
+
+        .trampitas-bar .icon { font-size: 1.4rem; }
+
+        .btn-comprar {
+            background: var(--accent2);
+            color: #111;
+            border: none;
+            border-radius: 8px;
+            padding: 0.45rem 1rem;
+            font-family: 'Nunito', sans-serif;
+            font-weight: 800;
+            font-size: 0.85rem;
+            cursor: pointer;
+            text-decoration: none;
+            transition: filter 0.15s;
+        }
+
+        .btn-comprar:hover { filter: brightness(1.1); }
+
+        /* ── RESPONSIVE ── */
+        @media (max-width: 480px) {
+            .actions { grid-template-columns: 1fr; }
+            .welcome-card { flex-direction: column; text-align: center; }
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <div class="logo">Preguntados</div>
+    <div class="header-right">
+        <div class="avatar">{{inicial}}</div>
+        <span class="header-username">{{nombre_usuario}}</span>
+    </div>
+</header>
+
+<main>
+
+    <!-- Bienvenida + puntaje -->
+    <div class="welcome-card">
+        <h1>
+            <span>Bienvenido de nuevo,</span>
+            {{nombre_completo}}
+        </h1>
+        <div class="puntaje-badge">
+            <div class="num">{{puntaje_total}}</div>
+            <div class="label">Puntos totales</div>
+        </div>
+    </div>
+
+    <!-- Trampitas -->
+    <div class="trampitas-bar">
+        <div class="info">
+            <span class="icon">🃏</span>
+            <span>Tenés <strong>{{trampitas}}</strong> trampita{{#trampitas_plural}}s{{/trampitas_plural}}</span>
+        </div>
+        <a href="?controller=trampitas&method=comprar" class="btn-comprar">+ Comprar</a>
+    </div>
+
+    <!-- Botones principales -->
+    <div class="actions">
+        <a href="?controller=partida&method=nueva" class="btn-main btn-jugar">
+            ▶ Nueva partida
+        </a>
+        <a href="?controller=ranking&method=index" class="btn-main btn-ranking">
+            🏆 Ver ranking
+        </a>
+    </div>
+
+    <!-- Historial de partidas -->
+    <div class="section-title">Mis partidas</div>
+
+    <div class="partidas-list">
+        {{#partidas}}
+            <div class="partida-card {{resultado}}">
+                <div class="partida-info">
+                    <div class="fecha">{{fecha}}</div>
+                    <div class="detalle">{{detalle}}</div>
+                </div>
+                <div class="partida-resultado">
+                    <div class="ptos {{resultado}}">{{puntaje}}</div>
+                    <div class="sub">puntos</div>
+                </div>
+            </div>
+        {{/partidas}}
+
+        {{^partidas}}
+            <div class="empty">
+                <strong>Todavía no jugaste ninguna partida</strong>
+                <p>¡Animáte y empezá tu primera!</p>
+            </div>
+        {{/partidas}}
+    </div>
+
+</main>
+
+</body>
+</html>

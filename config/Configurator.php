@@ -1,4 +1,6 @@
 <?php
+
+
 class Configurator {
 
     private $config;
@@ -8,9 +10,9 @@ class Configurator {
         $this->config = parse_ini_file("config/config.ini");
     }
 
-    public function getVikingoController()
+    public function getHomeController()
     {
-        return new VikingoController($this->getVikingoModel(), $this->getRenderer(), new Request());
+        return new homeController($this->getRenderer(), new Request());
     }
 
     private function getDatabase()
@@ -28,14 +30,9 @@ class Configurator {
         return new MustacheRenderer(__DIR__ . '/../view');
     }
 
-    private function getVikingoModel()
-    {
-        return new VikingoModel($this->getDatabase());
-    }
-
     public function getRouter()
     {
-        return new Router($this, 'vikingo', 'ver');
+        return new Router($this, 'home', 'index');
     }
 
     public function getOrDefault($controllerName, $defaultControllerName)
