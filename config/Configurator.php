@@ -11,7 +11,7 @@ class Configurator {
 
     public function getHomeController()
     {
-        return new HomeController($this->getRenderer(), new Request());
+        return new homeController($this->getRenderer(), new Request());
     }
 
     public function getRankingController()

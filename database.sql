@@ -1,5 +1,5 @@
 
-CREATE SCHEMA preguntados;
+CREATE NEW SCHEMA preguntados;
 
 USE preguntados;
 
