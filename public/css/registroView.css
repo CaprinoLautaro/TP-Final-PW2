@@ -199,6 +199,32 @@ body {
     animation: bounce 2s infinite;
 }
 
+.preview-container {
+    margin-top: 15px;
+    display: flex;
+    justify-content: center;
+}
+
+#preview-imagen {
+    width: 130px;
+    height: 130px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 3px solid #ddd;
+    box-shadow: 0 2px 8px rgba(0,0,0,.15);
+}
+
+.error-message {
+    background: #ffe5e5;
+    color: #c62828;
+    border: 1px solid #ef9a9a;
+    padding: 14px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    text-align: center;
+    font-weight: bold;
+}
+
 @keyframes bounce {
     0%, 100% { transform: translateY(0); }
     50% { transform: translateY(-5px); }

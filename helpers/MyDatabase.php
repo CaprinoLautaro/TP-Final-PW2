@@ -23,12 +23,37 @@ class MyDatabase
     {
         $stmt = $this->conexion->prepare($sql);
 
-        if (!empty($params)) {
-            $types = str_repeat("s", count($params));
-            $stmt->bind_param($types, ...$params);
+        // Ver si falla el prepare
+        if (!$stmt) {
+            die(
+                "Error en prepare: " .
+                $this->conexion->error
+            );
         }
 
-        $stmt->execute();
+        // Bind params
+        if (!empty($params)) {
+
+            $types =
+                str_repeat(
+                    "s",
+                    count($params)
+                );
+
+            $stmt->bind_param(
+                $types,
+                ...$params
+            );
+        }
+
+        // Ejecutar
+        if (!$stmt->execute()) {
+
+            die(
+                "Error SQL: " .
+                $stmt->error
+            );
+        }
 
         return $stmt->affected_rows;
     }

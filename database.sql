@@ -1,5 +1,5 @@
 
-CREATE NEW SCHEMA preguntados;
+CREATE DATABASE preguntados;
 
 USE preguntados;
 
@@ -73,34 +73,23 @@ CREATE TABLE opciones (
 );
 
 CREATE TABLE partidas (
-                          id                  INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
-                          tipo                ENUM('solitario','vs_bot','vs_jugador') NOT NULL DEFAULT 'solitario',
-                          estado              ENUM('en_curso','terminada','esperando') NOT NULL DEFAULT 'en_curso',
-                          jugador1_id         INT UNSIGNED NOT NULL,
-                          jugador2_id         INT UNSIGNED,
-                          ganador_id          INT UNSIGNED,
-                          puntaje_jugador1    INT UNSIGNED NOT NULL DEFAULT 0,
-                          puntaje_jugador2    INT UNSIGNED NOT NULL DEFAULT 0,
-                          creado_en           DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-                          terminada_en        DATETIME,
-                          FOREIGN KEY (jugador1_id) REFERENCES usuarios(id),
-                          FOREIGN KEY (jugador2_id) REFERENCES usuarios(id) ON DELETE SET NULL,
-                          FOREIGN KEY (ganador_id)  REFERENCES usuarios(id) ON DELETE SET NULL
+                          id              INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+                          usuario_id      INT UNSIGNED NOT NULL,
+                          puntaje         INT UNSIGNED NOT NULL DEFAULT 0,
+                          estado          ENUM('en_curso','terminada') NOT NULL DEFAULT 'en_curso',
+                          creado_en       DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+                          terminada_en    DATETIME
+
 );
 
 CREATE TABLE partidas_preguntas (
-                                    id              INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
-                                    partida_id      INT UNSIGNED NOT NULL,
-                                    pregunta_id     INT UNSIGNED NOT NULL,
-                                    usuario_id      INT UNSIGNED NOT NULL,
-                                    opcion_elegida  INT UNSIGNED,
-                                    es_correcta     TINYINT(1)  NOT NULL DEFAULT 0,
-                                    uso_trampita    TINYINT(1)  NOT NULL DEFAULT 0,
-                                    respondida_en   DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-                                    FOREIGN KEY (partida_id)     REFERENCES partidas(id) ON DELETE CASCADE,
-                                    FOREIGN KEY (pregunta_id)    REFERENCES preguntas(id),
-                                    FOREIGN KEY (usuario_id)     REFERENCES usuarios(id),
-                                    FOREIGN KEY (opcion_elegida) REFERENCES opciones(id) ON DELETE SET NULL
+                                    id                  INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+                                    partida_id          INT UNSIGNED NOT NULL,
+                                    pregunta_id         INT UNSIGNED NOT NULL,
+                                    opcion_elegida_id   INT UNSIGNED,
+                                    es_correcta         TINYINT(1) NOT NULL DEFAULT 0,
+                                    uso_trampita        TINYINT(1) NOT NULL DEFAULT 0,
+                                    respondida_en       DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
 
 CREATE TABLE preguntas_vistas (
@@ -154,4 +143,18 @@ CREATE TABLE usuarios_contextos (
                                     FOREIGN KEY (contexto_id) REFERENCES contextos(id) ON DELETE CASCADE
 );
 
+INSERT INTO paises (nombre, codigo) VALUES
+                                        ('Argentina', 'AR'),
+                                        ('Uruguay', 'UY'),
+                                        ('Chile', 'CL'),
+                                        ('Brasil', 'BR'),
+                                        ('México', 'MX');
+
+INSERT INTO roles (nombre)
+VALUES
+    ('usuario'),
+    ('editor'),
+    ('administrador');
+
 SET FOREIGN_KEY_CHECKS = 1;
+
