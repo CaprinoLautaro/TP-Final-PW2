@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <title>
+        Validar Cuenta
+    </title>
+
+    <link rel="stylesheet"
+          href="./public/css/homeView.css">
+</head>
+
+<body>
+
+{{>header}}
+
+<main
+        style="
+max-width:600px;
+margin:auto;
+text-align:center;
+padding:50px;"
+>
+
+    <h1>
+        Revisá tu correo
+    </h1>
+
+    <p>
+        Te enviamos un código
+        de validación por email.
+    </p>
+
+    <form
+            action="?controller=user&method=validarToken"
+            method="POST"
+    >
+
+        <input
+                type="text"
+                name="token"
+                placeholder="Ingresá tu código"
+                required
+        >
+
+        <button type="submit">
+            Validar cuenta
+        </button>
+
+    </form>
+
+</main>
+
+{{>footer}}
+
+</body>
+</html>

@@ -20,6 +20,11 @@ class Configurator
         return new RankingController($this->getRenderer(), new Request());
     }
 
+    public function getUserController()
+    {
+        return new UserController($this->getUserModel(), $this->getRenderer(), new Request());
+    }
+
     private function getDatabase()
     {
         return new MyDatabase(
@@ -38,6 +43,11 @@ class Configurator
     public function getRouter()
     {
         return new Router($this, 'home', 'index');
+    }
+
+    private function getUserModel()
+    {
+        return new UserModel($this->getDatabase());
     }
 
     public function getOrDefault($controllerName, $defaultControllerName)
