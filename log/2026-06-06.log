@@ -29,3 +29,10 @@
 [17:05:44] [INFO] UserController::registrarUsuario - formulario
 [17:10:21] [INFO] UserController::registrarUsuario - formulario
 [17:11:28] [INFO] UserController::registrarUsuario - formulario
+[18:58:13] [INFO] UserController::registrarUsuario - formulario
+[19:04:02] [INFO] UserController::procesarRegistroUsuario - nombre=Lautaro caprino
+[19:04:06] [INFO] UserController::registrarUsuario - formulario
+[19:13:34] [INFO] UserController::registrarUsuario - formulario
+[19:16:13] [INFO] UserController::registrarUsuario - formulario
+[19:56:35] [INFO] UserController::registrarUsuario - formulario
+[19:59:04] [INFO] UserController::registrarUsuario - formulario
