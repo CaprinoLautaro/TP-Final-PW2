@@ -1,5 +1,5 @@
 
-CREATE NEW SCHEMA preguntados;
+CREATE SCHEMA preguntados;
 
 USE preguntados;
 
@@ -155,3 +155,51 @@ CREATE TABLE usuarios_contextos (
 );
 
 SET FOREIGN_KEY_CHECKS = 1;
+
+
+INSERT INTO paises (id, nombre, codigo)
+VALUES (1, 'Argentina', 'AR');
+
+INSERT INTO roles (id, nombre)
+VALUES (1, 'Jugador');
+
+INSERT INTO usuarios (
+    nombre_completo,
+    anio_nacimiento,
+    sexo,
+    pais_id,
+    ciudad,
+    latitud,
+    longitud,
+    email,
+    contrasenia,
+    nombre_usuario,
+    foto_perfil,
+    rol_id,
+    activo,
+    token_validacion,
+    token_expira,
+    puntaje_total,
+    trampitas,
+    creado_en
+)
+VALUES (
+           'Sabrina Federico',
+           1995,
+           'Femenino',
+           1,
+           'Buenos Aires',
+           -34.603722,
+           -58.381592,
+           'sabri@test.com',
+           '123456',
+           'sabri',
+           'perfil.jpg',
+           1,
+           1,
+           NULL,
+           NULL,
+           250,
+           3,
+           CURRENT_TIMESTAMP
+       );

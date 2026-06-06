@@ -1,6 +1,7 @@
 <?php
 
-class Configurator {
+class Configurator
+{
 
     private $config;
 
@@ -47,5 +48,15 @@ class Configurator {
         }
         $defaultGetter = 'get' . ucfirst($defaultControllerName) . 'Controller';
         return $this->{$defaultGetter}();
+    }
+
+    public function getLoginController()
+    {
+        return new LoginController($this->getRenderer(), new Request(), $this->getUsuarioModel());
+    }
+
+    public function getUsuarioModel()
+    {
+        return new UsuarioModel($this->getDatabase());
     }
 }
