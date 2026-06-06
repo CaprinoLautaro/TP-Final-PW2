@@ -18,6 +18,13 @@
 
         <h1>Iniciar Sesión</h1>
 
+        {{#success}}
+            <div class="success-message">
+                Cuenta activada correctamente.
+                Ya podés iniciar sesión.
+            </div>
+        {{/success}}
+
         <form action="?controller=login&method=autenticar" method="POST">
             <label for="usuario">Usuario</label>
             <input type="text"

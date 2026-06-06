@@ -78,4 +78,33 @@ class UserModel
                 [$token]
             ) > 0;
     }
+
+    public function buscarPorNombreUsuario($nombre_usuario)
+    {
+        $resultado = $this->database->query(
+            "SELECT * FROM usuarios WHERE nombre_usuario = ?",
+            [$nombre_usuario]
+        );
+        return $resultado[0] ?? null;
+    }
+
+    public function buscarPorMail(
+        $mail
+    )
+    {
+        $filas =
+            $this->database->query(
+                "SELECT *
+             FROM usuarios
+             WHERE email = ?",
+                [$mail]
+            );
+
+        return
+            !empty($filas)
+                ? $filas[0]
+                : null;
+    }
+
+
 }

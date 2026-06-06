@@ -1,23 +1,56 @@
 <link rel="stylesheet" href="./public/css/header.css">
 
 <header>
-    <div class="logo">Preguntados</div>
+    <div class="logo">
+        Preguntados
+    </div>
 
     <div class="header-right">
 
-        <div class="header-perfil">
-            <a href="?controller=perfil&method=index" class="avatar" title="Ver perfil">
-                {{inicial}}
-            </a>
-            <span class="header-username">{{nombre_usuario}}</span>
-        </div>
+        {{#logueado}}
+            <div class="header-perfil">
 
-        <a href="?controller=auth&method=logout" class="header-logout" title="Cerrar sesión">
-            Salir
-        </a>
-        <a href="?controller=user&method=registrarUsuario" class="header-logout" title="Registrarse">
-            Registrarse
-        </a>
+                <a href="?controller=perfil&method=index"
+                   class="avatar"
+                   title="Ver perfil">
+
+                    {{inicial}}
+
+                </a>
+
+                <span class="header-username">
+                    {{nombre_usuario}}
+                </span>
+
+            </div>
+
+            <a href="?controller=login&method=logout"
+               class="header-logout"
+               title="Cerrar sesión">
+
+                Salir
+
+            </a>
+        {{/logueado}}
+
+
+        {{^logueado}}
+            <a href="?controller=login&method=index"
+               class="header-logout"
+               title="Iniciar sesión">
+
+                Iniciar sesión
+
+            </a>
+
+            <a href="?controller=user&method=registrarUsuario"
+               class="header-logout"
+               title="Registrarse">
+
+                Registrarse
+
+            </a>
+        {{/logueado}}
 
     </div>
 </header>

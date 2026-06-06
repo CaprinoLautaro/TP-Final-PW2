@@ -2,58 +2,147 @@
 
 class LoginController
 {
-
     private $renderer;
     private $request;
     private $usuarioModel;
 
-    public function __construct($renderer, $request, $usuarioModel)
-    {
-        $this->renderer = $renderer;
-        $this->request = $request;
-        $this->usuarioModel = $usuarioModel;
+    public function __construct(
+        $renderer,
+        $request,
+        $usuarioModel
+    ) {
+
+        $this->renderer =
+            $renderer;
+
+        $this->request =
+            $request;
+
+        $this->usuarioModel =
+            $usuarioModel;
     }
 
     public function index()
     {
-        $this->renderer->render("login");
+        $success =
+            $this->request->get(
+                "success"
+            );
+
+        $this->renderer->render(
+            "login",
+            [
+                "success" =>
+                    $success
+            ]
+        );
     }
 
     public function autenticar()
     {
+        $nombreUsuario =
+            trim(
+                $this->request->post(
+                    "nombre_usuario"
+                )
+            );
 
-        $nombreUsuario = $this->request->post("nombre_usuario");
-        $contrasenia = $this->request->post("contrasenia");
+        $contrasenia =
+            $this->request->post(
+                "contrasenia"
+            );
 
-        $usuario = $this->usuarioModel->buscarPorNombreUsuario($nombreUsuario);
+        $usuario =
+            $this->usuarioModel
+                ->buscarPorNombreUsuario(
+                    $nombreUsuario
+                );
 
-        /*      if(!$usuario){
-                 echo "Usuario no encontrado";
-                 return;
-             }
+        // Usuario no existe
+        if (!$usuario) {
 
-             if(!$usuario["activo"]){
-                 echo "La cuenta aún no ha sido activada";
-             }
-
-             if(!password_verify(
-                 $contrasenia,
-                 $usuario["contrasenia"]
-             )){
-                 echo "Contraseña incorrecta";
-                 return;
-             }
-             header("Location: ?controller=home&method=index");
-             exit();*/
-
-        if ($contrasenia !== $usuario["contrasenia"]) {
-            echo "Contraseña incorrecta";
-            return;
+            die(
+            "Usuario no encontrado"
+            );
         }
 
-        header("Location: ?controller=home&method=index");
+        // Cuenta no activada
+        if (
+            !$usuario["activo"]
+        ) {
+
+            die(
+            "Debés activar tu cuenta antes de iniciar sesión."
+            );
+        }
+
+        // Contraseña incorrecta
+        if (
+            !password_verify(
+                $contrasenia,
+                $usuario[
+                "contrasenia"
+                ]
+            )
+        ) {
+
+            die(
+            "Contraseña incorrecta"
+            );
+        }
+
+        // Crear sesión
+        if (
+            session_status()
+            ===
+            PHP_SESSION_NONE
+        ) {
+
+            session_start();
+        }
+
+        $_SESSION[
+        "usuario"
+        ] = [
+
+            "id" =>
+                $usuario["id"],
+
+            "nombre_usuario" =>
+                $usuario[
+                "nombre_usuario"
+                ],
+
+            "rol_id" =>
+                $usuario[
+                "rol_id"
+                ]
+        ];
+
+        header(
+            "Location: ?controller=home&method=index"
+        );
+
         exit();
     }
 
+    public function logout()
+    {
+        if (
+            session_status()
+            ===
+            PHP_SESSION_NONE
+        ) {
 
+            session_start();
+        }
+
+        session_destroy();
+
+        header(
+            "Location: ?controller=home&method=index"
+        );
+
+        exit();
+    }
 }

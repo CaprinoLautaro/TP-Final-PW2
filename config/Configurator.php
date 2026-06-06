@@ -62,11 +62,11 @@ class Configurator
 
     public function getLoginController()
     {
-        return new LoginController($this->getRenderer(), new Request(), $this->getUsuarioModel());
+        return new LoginController(
+            $this->getRenderer(),
+            new Request(),
+            $this->getUserModel()
+        );
     }
 
-    public function getUsuarioModel()
-    {
-        return new UsuarioModel($this->getDatabase());
-    }
 }

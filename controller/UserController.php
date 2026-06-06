@@ -253,8 +253,10 @@ class UserController
     public function validarToken()
     {
         $token =
-            $this->request->post(
-                'token'
+            trim(
+                $this->request->post(
+                    'token'
+                )
             );
 
         $resultado =
@@ -264,14 +266,22 @@ class UserController
 
         if ($resultado) {
 
-            die(
-            "Cuenta activada correctamente"
+            header(
+                "Location:
+            ?controller=login&method=index
+            &success=1"
             );
+
+            exit();
 
         } else {
 
-            die(
-            "Token inválido"
+            $this->renderer->render(
+                "validacionView",
+                [
+                    "error" =>
+                        "Token inválido"
+                ]
             );
         }
     }
@@ -390,9 +400,8 @@ class UserController
 
     private function generarToken()
     {
-        return random_int(
-            10000,
-            99999
+        return bin2hex(
+            random_bytes(32)
         );
     }
 }
