@@ -1,55 +1,27 @@
 <!DOCTYPE html>
 <html lang="es">
-
 <head>
     <meta charset="UTF-8">
-    <title>
-        Validar Cuenta
-    </title>
-
-    <link rel="stylesheet"
-          href="./public/css/homeView.css">
+    <title>Validar Cuenta</title>
+    <link rel="stylesheet" href="./public/css/validarCuenta.css">
 </head>
-
 <body>
 
 {{>header}}
 
-<main
-        style="
-max-width:600px;
-margin:auto;
-text-align:center;
-padding:50px;"
->
+<main>
+    <h1>Revisá tu correo</h1>
+    <p>Te enviamos un código de validación por email.</p>
 
-    <h1>
-        Revisá tu correo
-    </h1>
-
-    <p>
-        Te enviamos un código
-        de validación por email.
-    </p>
-
-    <form
-            action="?controller=user&method=validarToken"
-            method="POST"
-    >
-
+    <form action="?controller=user&method=validarToken" method="POST">
         <input
-                type="text"
-                name="token"
-                placeholder="Ingresá tu código"
-                required
+            type="text"
+            name="token"
+            placeholder="Ingresá tu código"
+            required
         >
-
-        <button type="submit">
-            Validar cuenta
-        </button>
-
+        <button type="submit">Validar cuenta</button>
     </form>
-
 </main>
 
 {{>footer}}
