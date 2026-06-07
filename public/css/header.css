@@ -47,6 +47,16 @@ header {
     text-decoration: none;
     transition: filter 0.15s;
     flex-shrink: 0;
+    overflow: hidden; 
+}
+
+.avatar img {
+    width: 40px;     
+    height: 40px;  
+    border-radius: 50%;
+    object-fit: cover;
+    display: block;
+    flex-shrink: 0;    
 }
 
 .avatar:hover {
