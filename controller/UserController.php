@@ -266,12 +266,7 @@ class UserController
 
         if ($resultado) {
 
-            header(
-                "Location:
-            ?controller=login&method=index
-            &success=1"
-            );
-
+            header("Location:?controller=login&method=index&success=1");
             exit();
 
         } else {

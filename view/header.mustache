@@ -10,13 +10,18 @@
         {{#logueado}}
             <div class="header-perfil">
 
-                <a href="?controller=perfil&method=index"
-                   class="avatar"
-                   title="Ver perfil">
+        <a href="?controller=perfil&method=index"
+        class="avatar"
+        title="Ver perfil">
 
-                    {{inicial}}
+            {{#foto_perfil}}
+                <img src="{{foto_perfil}}" alt="Foto de perfil">
+            {{/foto_perfil}}
+            {{^foto_perfil}}
+                {{inicial}}
+            {{/foto_perfil}}
 
-                </a>
+        </a>
 
                 <span class="header-username">
                     {{nombre_usuario}}

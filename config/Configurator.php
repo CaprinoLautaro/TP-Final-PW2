@@ -37,7 +37,10 @@ class Configurator
 
     private function getRenderer()
     {
-        return new MustacheRenderer(__DIR__ . '/../view');
+    return new MustacheRenderer(
+        __DIR__ . '/../view',
+        $this->getDatabase()  
+    );    
     }
 
     public function getRouter()
@@ -67,6 +70,20 @@ class Configurator
             new Request(),
             $this->getUserModel()
         );
+    }
+
+    public function getPerfilController()
+    {
+    return new PerfilController(
+        $this->getRenderer(),
+        new Request(),
+        $this->getPerfilModel()
+    );
+    }
+
+    private function getPerfilModel()
+    {
+        return new PerfilModel($this->getDatabase());
     }
 
 }
