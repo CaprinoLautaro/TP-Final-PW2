@@ -6,7 +6,7 @@
     <title>Preguntados - Mi perfil</title>
 
     <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="public/css/perfilView.css">
+    <link rel="stylesheet" href="/public/css/perfilView.css">
 </head>
 
 <body>
@@ -15,6 +15,19 @@
 
 <main>
     <form action="?controller=perfil&method=procesarEdicion" method="POST" style="width: 100%;">
+
+        <input
+                type="hidden"
+                id="latitud"
+                name="latitud"
+                value="{{latitud}}">
+
+        <input
+                type="hidden"
+                id="longitud"
+                name="longitud"
+                value="{{longitud}}">
+
         <div class="perfil-hero">
 
             <div class="avatar-circle">
@@ -51,7 +64,7 @@
                 <span class="label">Ciudad</span>
                 <span class="valor">
                         {{#modo_edicion}}
-                            <input type="text" name="ciudad" value="{{ciudad}}" class="input-perfil-campo" required>
+                            <input type="text" id="ciudad" name="ciudad" value="{{ciudad}}" class="input-perfil-campo" required>
                         {{/modo_edicion}}
                     {{#modo_lectura}}
                         {{ciudad}}
@@ -145,15 +158,72 @@
 
         if (esModoEdicion) {
 
-            google.maps.event.addListener(marker, 'dragend', function (event) {
-                document.getElementById('latitud').value = event.latLng.lat();
-                document.getElementById('longitud').value = event.latLng.lng();
-            });
+            map.addListener(marker, 'dragend', function (event) {
+
+                    marker.setPosition(event.latLng);
+
+                    const lat = event.latLng.lat();
+                    const lng = event.latLng.lng();
+
+                    document.getElementById('latitud').value = lat;
+                    document.getElementById('longitud').value = lng;
+
+                    fetch(
+                            `https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}`
+                    )
+                            .then(response => response.json())
+                            .then(data => {
+
+                                console.log(data);
+
+                                const ciudad =
+                                        data.address.city ||
+                                        data.address.town ||
+                                        data.address.village ||
+                                        "";
+
+                                const pais =
+                                        data.address.country || "";
+
+                                console.log("País:", pais);
+                                console.log("Ciudad:", ciudad);
+                                document.getElementById('ciudad').value = ciudad;
+
+                            });
+                });
 
             map.addListener('click', function (event) {
+
                 marker.setPosition(event.latLng);
-                document.getElementById('latitud').value = event.latLng.lat();
-                document.getElementById('longitud').value = event.latLng.lng();
+
+                const lat = event.latLng.lat();
+                const lng = event.latLng.lng();
+
+                document.getElementById('latitud').value = lat;
+                document.getElementById('longitud').value = lng;
+
+                fetch(
+                        `https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}`
+                )
+                        .then(response => response.json())
+                        .then(data => {
+
+                            console.log(data);
+
+                            const ciudad =
+                                    data.address.city ||
+                                    data.address.town ||
+                                    data.address.village ||
+                                    "";
+
+                            const pais =
+                                    data.address.country || "";
+
+                            console.log("País:", pais);
+                            console.log("Ciudad:", ciudad);
+                            document.getElementById('ciudad').value = ciudad;
+
+                        });
             });
         }
     }

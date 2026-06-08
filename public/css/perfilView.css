@@ -164,14 +164,17 @@ main {
     font-weight: 700;
 }
 
-.input-perfil-header,
-.input-perfil-campo,
-.select-perfil-campo {
-    appearance: none;
-    -webkit-appearance: none;
-    outline: none;
-}
+/* ── RESPONSIVE ── */
+@media (max-width: 480px) {
+    .perfil-grid {
+        grid-template-columns: 1fr;
+    }
 
+    .perfil-hero {
+        flex-direction: column;
+        text-align: center;
+    }
+}
 .input-perfil-header {
     background: transparent;
     border: none;
@@ -201,17 +204,4 @@ main {
 .btn-guardar {
     background-color: #28a745; /* Verde piola para el éxito */
     color: white;
-}
-
-
-/* ── RESPONSIVE ── */
-@media (max-width: 480px) {
-    .perfil-grid {
-        grid-template-columns: 1fr;
-    }
-
-    .perfil-hero {
-        flex-direction: column;
-        text-align: center;
-    }
 }

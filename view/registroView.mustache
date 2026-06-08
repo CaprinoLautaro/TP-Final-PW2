@@ -70,31 +70,33 @@
                 <div class="input-group">
                     <label for="pais_id">País</label>
 
-                    <select id="pais_id"
+
+                    <input
+                            type="text"
+                            id="pais"
+                            placeholder="Seleccioná una ubicación"
+                            readonly
+                            required
+                    >
+
+                    <input
+                            type="hidden"
+                            id="pais_id"
                             name="pais_id"
-                            required>
-
-                        <option value="" disabled selected>
-                            Seleccioná tu país
-                        </option>
-
-                        <option value="1">Argentina</option>
-                        <option value="2">Uruguay</option>
-                        <option value="3">Chile</option>
-                        <option value="4">Brasil</option>
-                        <option value="5">México</option>
-
-                    </select>
+                    >
                 </div>
 
                 <div class="input-group">
                     <label for="ciudad">Ciudad</label>
 
-                    <input type="text"
-                           id="ciudad"
-                           name="ciudad"
-                           placeholder="Ej. Buenos Aires"
-                           required>
+                    <input
+                            type="text"
+                            id="ciudad"
+                            name="ciudad"
+                            placeholder="Seleccioná una ubicación"
+                            readonly
+                            required
+                    >
                 </div>
 
             </div>
@@ -256,6 +258,47 @@
             document.getElementById("longitud").value =
                     clickedPos.lng();
 
+            fetch(
+                    `https://nominatim.openstreetmap.org/reverse?format=json&lat=${clickedPos.lat()}&lon=${clickedPos.lng()}`
+            )
+                    .then(response => response.json())
+                    .then(data => {
+
+                        const pais =
+                                data.address.country;
+
+                        const ciudad =
+                                data.address.city ||
+                                data.address.town ||
+                                data.address.village ||
+                                "";
+
+                        document.getElementById("ciudad").value =
+                                ciudad;
+
+                        const paises = {
+                            "Argentina": "1",
+                            "Uruguay": "2",
+                            "Chile": "3",
+                            "Brasil": "4",
+                            "México": "5"
+                        };
+
+                        if (paises[pais]) {
+
+                            const paisId = paises[pais];
+
+                            document.getElementById("pais").value =
+                                    pais;
+
+                            document.getElementById("pais_id").value =
+                                    paisId;
+                        }
+
+                        console.log("País:", pais);
+                        console.log("Ciudad:", ciudad);
+                    });
+
             // Mostrar feedback visual
             const status =
                     document.getElementById(
@@ -292,6 +335,11 @@
                                     "longitud"
                             ).value;
 
+                    const paisId =
+                            document.getElementById(
+                                    "pais_id"
+                            ).value;
+
                     const password =
                             document.getElementById(
                                     "password"
@@ -308,6 +356,17 @@
 
                         alert(
                                 "Seleccioná una ubicación en el mapa."
+                        );
+
+                        return;
+                    }
+
+                    if (!paisId) {
+
+                        e.preventDefault();
+
+                        alert(
+                                "No se pudo determinar el país. Seleccioná nuevamente una ubicación."
                         );
 
                         return;
