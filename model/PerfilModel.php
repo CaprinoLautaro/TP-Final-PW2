@@ -28,4 +28,24 @@ class PerfilModel
 
         return $resultado[0] ?? null;
     }
+    public function actualizarUsuario($id, $nombre, $ciudad, $sexo, $anio, $latitud, $longitud) {
+        $sql = "UPDATE usuarios 
+            SET nombre_completo = ?, 
+                ciudad = ?, 
+                sexo = ?, 
+                anio_nacimiento = ?, 
+                latitud = ?, 
+                longitud = ? 
+            WHERE id = ?";
+
+        return $this->database->execute($sql, [
+            $nombre,
+            $ciudad,
+            $sexo,
+            $anio,
+            $latitud,
+            $longitud,
+            $id
+        ]);
+    }
 }

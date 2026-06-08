@@ -175,3 +175,33 @@ main {
         text-align: center;
     }
 }
+.input-perfil-header {
+    background: transparent;
+    border: none;
+    border-bottom: 2px solid #fff;
+    color: #fff;
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 2rem;
+    width: 100%;
+}
+
+.input-perfil-campo, .select-perfil-campo {
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 4px;
+    color: #fff;
+    font-family: 'Nunito', sans-serif;
+    padding: 4px 8px;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.select-perfil-campo option {
+    background: #1a1a2e; /* O el color oscuro de fondo que uses */
+    color: #fff;
+}
+
+.btn-guardar {
+    background-color: #28a745; /* Verde piola para el éxito */
+    color: white;
+}
