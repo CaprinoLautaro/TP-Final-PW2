@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Preguntados – Jugando</title>
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="./public/css/juegoView.css">
+</head>
+<body>
+
+{{>header}}
+
+<div class="categoria-banner" style="background-color: {{pregunta.categoria_color}}">
+    <span class="categoria-nombre">{{pregunta.categoria_nombre}}</span>
+</div>
+
+<main class="juego-main">
+
+    <div class="juego-meta">
+        <span class="progreso">
+            Pregunta <strong>{{numero_pregunta}}</strong> de <strong>{{total_preguntas}}</strong>
+        </span>
+        <span class="puntaje-actual">
+            Puntaje: <strong>{{puntaje_actual}}</strong>
+        </span>
+    </div>
+
+    <div class="barra-progreso">
+        <div
+            class="barra-relleno"
+            style="width: {{porcentaje_progreso}}%; background-color: {{pregunta.categoria_color}}"
+        ></div>
+    </div>
+
+    <div class="pregunta-card" style="border-top: 4px solid {{pregunta.categoria_color}}">
+        <p class="pregunta-enunciado">{{pregunta.enunciado}}</p>
+    </div>
+
+    <form
+        class="opciones-form"
+        action="?controller=partida&method=responder"
+        method="POST"
+    >
+        <input type="hidden" name="pregunta_id" value="{{pregunta.id}}">
+
+        <div class="opciones-grid">
+            {{#opciones}}
+            <button
+                type="submit"
+                name="opcion_id"
+                value="{{id}}"
+                class="opcion-btn"
+            >
+                <span class="opcion-letra">{{letra}}</span>
+                <span class="opcion-texto">{{texto}}</span>
+            </button>
+            {{/opciones}}
+        </div>
+    </form>
+
+</main>
+
+{{>footer}}
+
+</body>
+</html>

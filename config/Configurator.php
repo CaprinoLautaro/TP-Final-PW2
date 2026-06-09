@@ -81,9 +81,17 @@ class Configurator
     );
     }
 
-    private function getPerfilModel()
+    public function getPartidaController()
     {
-        return new PerfilModel($this->getDatabase());
+        return new PartidaController(
+            $this->getRenderer(),
+            new Request(),
+            $this->getPartidaModel()   
+        );
     }
-
+ 
+    private function getPartidaModel()
+    {
+        return new PartidaModel($this->getDatabase());
+    }
 }

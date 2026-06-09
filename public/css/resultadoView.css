@@ -1,0 +1,153 @@
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+    --bg:      #0f0f1a;
+    --surface: #1a1a2e;
+    --card:    #16213e;
+    --accent:  #e94560;
+    --accent2: #f5a623;
+    --text:    #eaeaea;
+    --muted:   #7a7a9a;
+    --radius:  14px;
+    --verde:   #2ecc71;
+}
+
+body {
+    background-color: var(--bg);
+    color: var(--text);
+    font-family: 'Nunito', sans-serif;
+    min-height: 100vh;
+}
+
+.resultado-main {
+    max-width: 520px;
+    margin: 0 auto;
+    padding: 3rem 1.5rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2rem;
+}
+
+/* ── Tarjeta de resultado ── */
+.resultado-card {
+    width: 100%;
+    background: var(--card);
+    border-radius: var(--radius);
+    padding: 2.5rem 2rem;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.75rem;
+    border: 2px solid transparent;
+}
+
+.resultado-gano  { border-color: var(--verde); }
+.resultado-perdio { border-color: var(--accent); }
+
+.resultado-icono {
+    font-size: 3.5rem;
+    line-height: 1;
+}
+
+.resultado-titulo {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 2.2rem;
+    letter-spacing: 1px;
+}
+
+.resultado-gano  .resultado-titulo { color: var(--verde); }
+.resultado-perdio .resultado-titulo { color: var(--accent); }
+
+.resultado-subtitulo {
+    font-size: 0.95rem;
+    color: var(--muted);
+}
+
+/* ── Puntaje grande ── */
+.puntaje-grande {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 0.5rem;
+}
+
+.puntaje-numero {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 5rem;
+    line-height: 1;
+    color: var(--accent2);
+}
+
+.puntaje-label {
+    font-size: 0.85rem;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+/* ── Respuesta correcta (solo cuando pierde) ── */
+.respuesta-correcta-box {
+    margin-top: 1rem;
+    background: rgba(233, 69, 96, 0.1);
+    border: 1px solid rgba(233, 69, 96, 0.3);
+    border-radius: 10px;
+    padding: 1rem 1.25rem;
+    width: 100%;
+}
+
+.respuesta-correcta-label {
+    font-size: 0.8rem;
+    color: var(--muted);
+    margin-bottom: 0.3rem;
+}
+
+.respuesta-correcta-texto {
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: var(--text);
+}
+
+/* ── Botones de acción ── */
+.resultado-acciones {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    width: 100%;
+}
+
+.btn-main {
+    display: block;
+    text-align: center;
+    padding: 0.9rem;
+    border-radius: var(--radius);
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.15rem;
+    letter-spacing: 1px;
+    text-decoration: none;
+    transition: opacity 0.2s, transform 0.1s;
+}
+
+.btn-main:hover { opacity: 0.88; transform: translateY(-1px); }
+.btn-jugar { background: var(--accent); color: #fff; }
+
+.btn-secondary {
+    display: block;
+    text-align: center;
+    padding: 0.9rem;
+    border-radius: var(--radius);
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.1rem;
+    letter-spacing: 1px;
+    text-decoration: none;
+    background: var(--surface);
+    color: var(--muted);
+    border: 1px solid #2a2a4a;
+    transition: color 0.2s, border-color 0.2s;
+}
+
+.btn-secondary:hover {
+    color: var(--text);
+    border-color: var(--muted);
+}

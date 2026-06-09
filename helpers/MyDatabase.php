@@ -23,7 +23,6 @@ class MyDatabase
     {
         $stmt = $this->conexion->prepare($sql);
 
-        // Ver si falla el prepare
         if (!$stmt) {
             die(
                 "Error en prepare: " .
@@ -31,7 +30,6 @@ class MyDatabase
             );
         }
 
-        // Bind params
         if (!empty($params)) {
 
             $types =
@@ -46,7 +44,6 @@ class MyDatabase
             );
         }
 
-        // Ejecutar
         if (!$stmt->execute()) {
 
             die(
@@ -56,6 +53,11 @@ class MyDatabase
         }
 
         return $stmt->affected_rows;
+    }
+
+    public function lastInsertId()
+    {
+        return $this->conexion->insert_id;
     }
 
     public function __destruct()

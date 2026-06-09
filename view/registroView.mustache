@@ -12,8 +12,9 @@
 
 {{>header}}
 
-<div>
+<main>
     <h2 class="section-title">Crear nueva cuenta</h2>
+
     {{#error}}
         <div class="error-message">
             {{error}}
@@ -22,6 +23,7 @@
 
     <form class="register-form" action="?controller=user&method=procesarRegistroUsuario" method="POST" enctype="multipart/form-data">
 
+        <!-- ── DATOS PERSONALES ── -->
         <div class="form-section">
             <h3>Datos Personales</h3>
 
@@ -42,14 +44,13 @@
                         <option value="" disabled selected>Seleccioná una opción</option>
                         <option value="Masculino">Masculino</option>
                         <option value="Femenino">Femenino</option>
-                        <option value="Prefiero no cargarlo">
-                            Prefiero no cargarlo
-                        </option>
+                        <option value="Prefiero no cargarlo">Prefiero no cargarlo</option>
                     </select>
                 </div>
             </div>
         </div>
 
+        <!-- ── UBICACIÓN ── -->
         <div class="form-section">
             <h3>Ubicación</h3>
             <p class="form-instruction">Hacé clic en el mapa para marcar tu ubicación:</p>
@@ -57,52 +58,27 @@
             <div class="map-container">
                 <div id="map" style="width: 100%; height: 300px; border-radius: 8px;"></div>
             </div>
-            <p id="ubicacion-status" class="input-help">
-                Seleccioná una ubicación en el mapa
-            </p>
 
+            <p id="ubicacion-status" class="input-help">Seleccioná una ubicación en el mapa</p>
 
             <input type="hidden" id="latitud" name="latitud">
             <input type="hidden" id="longitud" name="longitud">
 
             <div class="form-row">
-
                 <div class="input-group">
                     <label for="pais_id">País</label>
-
-
-                    <input
-                            type="text"
-                            id="pais"
-                            placeholder="Seleccioná una ubicación"
-                            readonly
-                            required
-                    >
-
-                    <input
-                            type="hidden"
-                            id="pais_id"
-                            name="pais_id"
-                    >
+                    <input type="text" id="pais" placeholder="Seleccioná una ubicación" readonly required>
+                    <input type="hidden" id="pais_id" name="pais_id">
                 </div>
 
                 <div class="input-group">
                     <label for="ciudad">Ciudad</label>
-
-                    <input
-                            type="text"
-                            id="ciudad"
-                            name="ciudad"
-                            placeholder="Seleccioná una ubicación"
-                            readonly
-                            required
-                    >
+                    <input type="text" id="ciudad" name="ciudad" placeholder="Seleccioná una ubicación" readonly required>
                 </div>
-
             </div>
         </div>
 
-
+        <!-- ── PERFIL DE USUARIO ── -->
         <div class="form-section">
             <h3>Perfil de Usuario</h3>
 
@@ -112,35 +88,20 @@
             </div>
 
             <div class="input-group">
-                <label for="avatar">
-                    Foto de Perfil
-                </label>
+                <label for="avatar">Foto de Perfil</label>
 
                 <div class="file-upload-wrapper">
-
-                    <input
-                            type="file"
-                            id="avatar"
-                            name="foto"
-                            accept="image/*"
-                            required
-                    >
-
-                    <div class="file-upload-btn">
-                        Seleccionar Imagen
-                    </div>
+                    <input type="file" id="avatar" name="foto" accept="image/*" required>
+                    <div class="file-upload-btn">Seleccionar Imagen</div>
                 </div>
 
-                <!-- Preview -->
                 <div class="preview-container">
-                    <img
-                            id="preview-imagen"
-                            src="./public/img/default-user.png"
-                            alt="Vista previa"
-                    >
+                    <img id="preview-imagen" src="./public/img/default-user.png" alt="Vista previa">
                 </div>
             </div>
+        </div>
 
+        <!-- ── CREDENCIALES ── -->
         <div class="form-section">
             <h3>Credenciales</h3>
 
@@ -151,42 +112,23 @@
             </div>
 
             <div class="form-row">
-
                 <div class="input-group">
-                    <label for="password">
-                        Contraseña
-                    </label>
-
-                    <input
-                            type="password"
-                            id="password"
-                            name="contrasenia"
-                            placeholder="••••••••"
-                            required
-                    >
+                    <label for="password">Contraseña</label>
+                    <input type="password" id="password" name="contrasenia" placeholder="••••••••" required>
                 </div>
 
                 <div class="input-group">
-                    <label for="password_repeat">
-                        Repetir Contraseña
-                    </label>
-
-                    <input
-                            type="password"
-                            id="password_repeat"
-                            name="repetir_contrasenia"
-                            placeholder="••••••••"
-                            required
-                    >
+                    <label for="password_repeat">Repetir Contraseña</label>
+                    <input type="password" id="password_repeat" name="repetir_contrasenia" placeholder="••••••••" required>
                 </div>
-
             </div>
+        </div>
 
         <button type="submit" class="btn-main btn-jugar btn-submit">
             Registrar
         </button>
-    </form>
 
+    </form>
 </main>
 
 {{>footer}}
@@ -197,228 +139,93 @@
 
     function initMap() {
 
-        // Buenos Aires por defecto
-        const defaultCoords = {
-            lat: -34.6037,
-            lng: -58.3816
-        };
+        const defaultCoords = { lat: -34.6037, lng: -58.3816 };
 
-        map = new google.maps.Map(
-                document.getElementById("map"),
-                {
-                    zoom: 12,
-                    center: defaultCoords
-                }
-        );
+        map = new google.maps.Map(document.getElementById("map"), {
+            zoom: 12,
+            center: defaultCoords
+        });
 
-        // Intentar usar GPS del navegador
         if (navigator.geolocation) {
-
             navigator.geolocation.getCurrentPosition(
-
-                    (position) => {
-
-                        const userPos = {
-                            lat: position.coords.latitude,
-                            lng: position.coords.longitude
-                        };
-
-                        map.setCenter(userPos);
-                    },
-
-                    () => {
-                        console.log(
-                                "No se pudo obtener la ubicación del navegador"
-                        );
-                    }
+                (position) => {
+                    map.setCenter({
+                        lat: position.coords.latitude,
+                        lng: position.coords.longitude
+                    });
+                },
+                () => console.log("No se pudo obtener la ubicación del navegador")
             );
         }
 
-        // Click del usuario en el mapa
         map.addListener("click", (mapsMouseEvent) => {
-
             const clickedPos = mapsMouseEvent.latLng;
 
-            // Crear o mover marcador
             if (marker) {
-
                 marker.setPosition(clickedPos);
-
             } else {
+                marker = new google.maps.Marker({ position: clickedPos, map: map });
+            }
 
-                marker = new google.maps.Marker({
-                    position: clickedPos,
-                    map: map
+            document.getElementById("latitud").value  = clickedPos.lat();
+            document.getElementById("longitud").value = clickedPos.lng();
+
+            fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${clickedPos.lat()}&lon=${clickedPos.lng()}`)
+                .then(response => response.json())
+                .then(data => {
+                    const pais   = data.address.country;
+                    const ciudad = data.address.city || data.address.town || data.address.village || "";
+
+                    document.getElementById("ciudad").value = ciudad;
+
+                    const paises = { "Argentina": "1", "Uruguay": "2", "Chile": "3", "Brasil": "4", "México": "5" };
+
+                    if (paises[pais]) {
+                        document.getElementById("pais").value    = pais;
+                        document.getElementById("pais_id").value = paises[pais];
+                    }
                 });
-            }
 
-            // Guardar coordenadas
-            document.getElementById("latitud").value =
-                    clickedPos.lat();
-
-            document.getElementById("longitud").value =
-                    clickedPos.lng();
-
-            fetch(
-                    `https://nominatim.openstreetmap.org/reverse?format=json&lat=${clickedPos.lat()}&lon=${clickedPos.lng()}`
-            )
-                    .then(response => response.json())
-                    .then(data => {
-
-                        const pais =
-                                data.address.country;
-
-                        const ciudad =
-                                data.address.city ||
-                                data.address.town ||
-                                data.address.village ||
-                                "";
-
-                        document.getElementById("ciudad").value =
-                                ciudad;
-
-                        const paises = {
-                            "Argentina": "1",
-                            "Uruguay": "2",
-                            "Chile": "3",
-                            "Brasil": "4",
-                            "México": "5"
-                        };
-
-                        if (paises[pais]) {
-
-                            const paisId = paises[pais];
-
-                            document.getElementById("pais").value =
-                                    pais;
-
-                            document.getElementById("pais_id").value =
-                                    paisId;
-                        }
-
-                        console.log("País:", pais);
-                        console.log("Ciudad:", ciudad);
-                    });
-
-            // Mostrar feedback visual
-            const status =
-                    document.getElementById(
-                            "ubicacion-status"
-                    );
-
-            if (status) {
-                status.innerText =
-                        "Ubicación seleccionada correctamente";
-            }
-
-            console.log(
-                    "Lat:",
-                    clickedPos.lat(),
-                    "Lng:",
-                    clickedPos.lng()
-            );
+            const status = document.getElementById("ubicacion-status");
+            if (status) status.innerText = "Ubicación seleccionada correctamente";
         });
 
-        // Validación del formulario
-        document.querySelector(
-                ".register-form"
-        ).addEventListener(
-                "submit",
-                function (e) {
+        document.querySelector(".register-form").addEventListener("submit", function (e) {
+            const latitud        = document.getElementById("latitud").value;
+            const longitud       = document.getElementById("longitud").value;
+            const paisId         = document.getElementById("pais_id").value;
+            const password       = document.getElementById("password").value;
+            const passwordRepeat = document.getElementById("password_repeat").value;
 
-                    const latitud =
-                            document.getElementById(
-                                    "latitud"
-                            ).value;
-
-                    const longitud =
-                            document.getElementById(
-                                    "longitud"
-                            ).value;
-
-                    const paisId =
-                            document.getElementById(
-                                    "pais_id"
-                            ).value;
-
-                    const password =
-                            document.getElementById(
-                                    "password"
-                            ).value;
-
-                    const passwordRepeat =
-                            document.getElementById(
-                                    "password_repeat"
-                            ).value;
-
-                    if (!latitud || !longitud) {
-
-                        e.preventDefault();
-
-                        alert(
-                                "Seleccioná una ubicación en el mapa."
-                        );
-
-                        return;
-                    }
-
-                    if (!paisId) {
-
-                        e.preventDefault();
-
-                        alert(
-                                "No se pudo determinar el país. Seleccioná nuevamente una ubicación."
-                        );
-
-                        return;
-                    }
-
-                    if (password !== passwordRepeat) {
-
-                        e.preventDefault();
-
-                        alert(
-                                "Las contraseñas no coinciden."
-                        );
-
-                        return;
-                    }
-                }
-        );
+            if (!latitud || !longitud) {
+                e.preventDefault();
+                alert("Seleccioná una ubicación en el mapa.");
+                return;
+            }
+            if (!paisId) {
+                e.preventDefault();
+                alert("No se pudo determinar el país. Seleccioná nuevamente una ubicación.");
+                return;
+            }
+            if (password !== passwordRepeat) {
+                e.preventDefault();
+                alert("Las contraseñas no coinciden.");
+                return;
+            }
+        });
     }
 </script>
 
 <script>
-    document
-            .getElementById("avatar")
-            .addEventListener(
-                    "change",
-                    function (event) {
-
-                        const archivo =
-                                event.target.files[0];
-
-                        if (!archivo) return;
-
-                        const reader =
-                                new FileReader();
-
-                        reader.onload =
-                                function (e) {
-
-                                    document
-                                            .getElementById(
-                                                    "preview-imagen"
-                                            )
-                                            .src =
-                                            e.target.result;
-                                };
-
-                        reader.readAsDataURL(
-                                archivo
-                        );
-                    }
-            );
+    document.getElementById("avatar").addEventListener("change", function (event) {
+        const archivo = event.target.files[0];
+        if (!archivo) return;
+        const reader = new FileReader();
+        reader.onload = function (e) {
+            document.getElementById("preview-imagen").src = e.target.result;
+        };
+        reader.readAsDataURL(archivo);
+    });
 </script>
 
 <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBk9DLeup0-V7pz5-ua52YI8qz_Sk6yC94&callback=initMap" async defer></script>

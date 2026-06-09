@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Preguntados – Resultado</title>
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="./public/css/resultadoView.css">
+</head>
+<body>
+
+{{>header}}
+
+<main class="resultado-main">
+
+    {{#gano}}
+    <!-- ── GANÓ: completó las 10 preguntas ── -->
+    <div class="resultado-card resultado-gano">
+        <div class="resultado-icono">🏆</div>
+        <h2 class="resultado-titulo">¡Felicitaciones!</h2>
+        <p class="resultado-subtitulo">Respondiste todas las preguntas correctamente</p>
+
+        <div class="puntaje-grande">
+            <span class="puntaje-numero">{{puntaje}}</span>
+            <span class="puntaje-label">puntos</span>
+        </div>
+    </div>
+    {{/gano}}
+
+    {{#perdio}}
+    <!-- ── PERDIÓ: se equivocó ── -->
+    <div class="resultado-card resultado-perdio">
+        <div class="resultado-icono">💥</div>
+        <h2 class="resultado-titulo">¡Mala suerte!</h2>
+        <p class="resultado-subtitulo">Respondiste mal y perdiste la partida</p>
+
+        <div class="puntaje-grande">
+            <span class="puntaje-numero">{{puntaje}}</span>
+            <span class="puntaje-label">puntos acumulados</span>
+        </div>
+
+        <div class="respuesta-correcta-box">
+            <p class="respuesta-correcta-label">La respuesta correcta era:</p>
+            <p class="respuesta-correcta-texto">{{correcta_texto}}</p>
+        </div>
+    </div>
+    {{/perdio}}
+
+    <!-- ── Acciones ── -->
+    <div class="resultado-acciones">
+        <a
+            href="?controller=partida&method=nueva"
+            class="btn-main btn-jugar"
+        >
+            Jugar de nuevo
+        </a>
+        <a
+            href="?controller=home&method=index"
+            class="btn-secondary"
+        >
+            Volver al inicio
+        </a>
+    </div>
+
+</main>
+
+{{>footer}}
+
+</body>
+</html>
