@@ -5,6 +5,8 @@ class PartidaController
     private $renderer;
     private $request;
     private $partidaModel;
+    
+    private $userModel;
 
     const PREGUNTAS_POR_PARTIDA = 10;
     const LETRAS = ['A', 'B', 'C', 'D'];
@@ -12,11 +14,13 @@ class PartidaController
     public function __construct(
         $renderer,
         $request,
-        $partidaModel
+        $partidaModel,
+        $userModel
     ) {
         $this->renderer     = $renderer;
         $this->request      = $request;
         $this->partidaModel = $partidaModel;
+        $this->userModel = $userModel;
     }
 
     // ─────────────────────────────────────────────────────────────────
@@ -186,6 +190,8 @@ class PartidaController
                 $puntajeFinal = $this->partidaModel
                     ->terminarPartida($sesion['id'], $usuarioId);
                 $sesion['puntaje_final'] = $puntajeFinal;
+                $sesion['usuario'] =
+                    $this->userModel->obtenerUsuarioPorId($usuarioId);
 
                 header("Location: ?controller=partida&method=resultado");
                 exit();
@@ -208,6 +214,8 @@ class PartidaController
                 ->terminarPartida($sesion['id'], $usuarioId);
 
             $sesion['puntaje_final'] = $puntajeFinal;
+            $sesion['usuario'] =
+                $this->userModel->obtenerUsuarioPorId($usuarioId);
 
             header("Location: ?controller=partida&method=resultado");
             exit();

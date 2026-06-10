@@ -23,8 +23,9 @@ class UserModel
             contrasenia,
             nombre_usuario,
             foto_perfil,
-            token_validacion
-        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+            token_validacion,
+            nivel
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
         return $this->database->execute(
                 $sql,
@@ -105,6 +106,19 @@ class UserModel
                 ? $filas[0]
                 : null;
     }
+
+    public function obtenerUsuarioPorId($usuarioId)
+    {
+        $resultado = $this->database->query(
+            "SELECT puntaje_total, nivel
+         FROM usuarios
+         WHERE id = ?",
+            [$usuarioId]
+        );
+
+        return $resultado[0] ?? null;
+    }
+
 
 
 }

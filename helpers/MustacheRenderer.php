@@ -8,13 +8,13 @@ require_once(
 class MustacheRenderer
 {
     private $mustache;
-    private $database;  // agregás esto
+    private $database;
 
     public function __construct(
         $viewsFolder,
-        $database = null  // opcional para no romper nada
+        $database = null
     ) {
-        $this->database = $database;  // agregás esto
+        $this->database = $database;
 
         $this->mustache =
             new Mustache_Engine([
@@ -40,20 +40,33 @@ class MustacheRenderer
         $usuario = $_SESSION['usuario'] ?? null;
 
         $fotoPerfil = '';
+        $usuarioDB = [];
 
         if ($usuario && $this->database) {
             $resultado = $this->database->query(
-                "SELECT foto_perfil FROM usuarios WHERE id = ?",
+                "SELECT
+                    foto_perfil,
+                    puntaje_total,
+                    nivel
+                 FROM usuarios
+                 WHERE id = ?",
                 [$usuario['id']]
             );
-            $fotoPerfil = $resultado[0]['foto_perfil'] ?? '';
+
+            $usuarioDB = $resultado[0] ?? [];
+            $fotoPerfil = $usuarioDB['foto_perfil'] ?? '';
         }
 
         $headerData = [
-            'logueado'      => !empty($usuario),
+            'logueado'       => !empty($usuario),
             'nombre_usuario' => $usuario['nombre_usuario'] ?? '',
-            'inicial'       => strtoupper(substr($usuario['nombre_usuario'] ?? '', 0, 1)),
-            'foto_perfil'   => $fotoPerfil,
+            'inicial'        => strtoupper(
+                substr($usuario['nombre_usuario'] ?? '', 0, 1)
+            ),
+            'foto_perfil'    => $fotoPerfil,
+
+            'puntaje_total'  => $usuarioDB['puntaje_total'] ?? 0,
+            'nivel'          => $usuarioDB['nivel'] ?? '',
         ];
 
         $data = array_merge($data, $headerData);

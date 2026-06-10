@@ -204,6 +204,10 @@ class UserController
             $email,
             $token
         );
+        Mailer::enviarToken(
+            $email,
+            $token
+        );
 
 
         $datos = [
@@ -218,7 +222,8 @@ class UserController
             $contraseniaHasheada,
             $nombreUsuario,
             $foto,
-            $token
+            $token,
+            'Malo'
         ];
 
 
@@ -396,7 +401,8 @@ class UserController
     private function generarToken()
     {
         return bin2hex(
-            random_bytes(32)
+            random_bytes(3)
         );
     }
+
 }

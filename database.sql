@@ -37,8 +37,10 @@ CREATE TABLE usuarios (
                           puntaje_total       INT UNSIGNED NOT NULL DEFAULT 0,
                           trampitas           INT UNSIGNED NOT NULL DEFAULT 0,
                           creado_en           DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+                          nivel               ENUM('Malo', 'Bueno', 'Capo'),
                           FOREIGN KEY (pais_id) REFERENCES paises(id),
                           FOREIGN KEY (rol_id)  REFERENCES roles(id)
+
 );
 
 CREATE TABLE categorias (

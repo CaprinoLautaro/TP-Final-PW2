@@ -8,6 +8,11 @@ class Configurator
     public function __construct()
     {
         $this->config = parse_ini_file("config/config.ini");
+
+    }
+    public function getConfig()
+    {
+        return $this->config;
     }
 
     public function getHomeController()
@@ -86,12 +91,21 @@ class Configurator
         return new PartidaController(
             $this->getRenderer(),
             new Request(),
-            $this->getPartidaModel()   
+            $this->getPartidaModel(),
+            $this->getUserModel()
         );
     }
  
     private function getPartidaModel()
     {
         return new PartidaModel($this->getDatabase());
+
+    }
+
+    private function getPerfilModel()
+    {
+        return new PerfilModel(
+            $this->getDatabase()
+        );
     }
 }

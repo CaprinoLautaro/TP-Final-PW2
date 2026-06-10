@@ -247,13 +247,16 @@ class PartidaModel
     {
         $this->database->execute(
             "UPDATE partidas
-             SET estado = 'terminada', terminada_en = NOW()
-             WHERE id = ?",
+         SET estado = 'terminada',
+             terminada_en = NOW()
+         WHERE id = ?",
             [$partidaId]
         );
 
         $resultado = $this->database->query(
-            "SELECT puntaje FROM partidas WHERE id = ?",
+            "SELECT puntaje
+         FROM partidas
+         WHERE id = ?",
             [$partidaId]
         );
 
@@ -261,10 +264,11 @@ class PartidaModel
 
         $this->database->execute(
             "UPDATE usuarios
-             SET puntaje_total = puntaje_total + ?
-             WHERE id = ?",
+         SET puntaje_total = puntaje_total + ?
+         WHERE id = ?",
             [$puntaje, $usuarioId]
         );
+        $this->actualizarNivelUsuario($usuarioId);
 
         return $puntaje;
     }
@@ -300,4 +304,46 @@ class PartidaModel
 
         return $resultado[0] ?? null;
     }
+
+    public function obtenerNivelUsuario($usuarioId)
+    {
+        $resultado = $this->database->query(
+            "SELECT nivel
+         FROM usuarios
+         WHERE id = ?",
+            [$usuarioId]
+        );
+
+        return $resultado[0]['nivel']
+            ?? 'Principiante';
+    }
+
+    public function actualizarNivelUsuario($usuarioId)
+    {
+        $resultado = $this->database->query(
+            "SELECT puntaje_total
+         FROM usuarios
+         WHERE id = ?",
+            [$usuarioId]
+        );
+
+        $puntaje = (int) ($resultado[0]['puntaje_total'] ?? 0);
+
+        $nivel = 'malo';
+
+        if ($puntaje >= 15) {
+            $nivel = 'capo';
+        } elseif ($puntaje >= 10) {
+            $nivel = 'bueno';
+        }
+
+        $this->database->execute(
+            "UPDATE usuarios
+         SET nivel = ?
+         WHERE id = ?",
+            [$nivel, $usuarioId]
+        );
+    }
+
+
 }

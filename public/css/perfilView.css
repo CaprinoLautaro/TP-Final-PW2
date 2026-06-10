@@ -197,11 +197,11 @@ main {
 }
 
 .select-perfil-campo option {
-    background: #1a1a2e; /* O el color oscuro de fondo que uses */
+    background: #1a1a2e;
     color: #fff;
 }
 
 .btn-guardar {
-    background-color: #28a745; /* Verde piola para el éxito */
+    background-color: #28a745;
     color: white;
 }

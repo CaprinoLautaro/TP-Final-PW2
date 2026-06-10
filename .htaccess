@@ -49,4 +49,7 @@ Options -Indexes
     # ── REGLA 2: /controller (sin method) ────────────────
     # Si solo viene el controller, el router usa el método default ('ver').
     RewriteRule ^([^/]+)$         index.php?controller=$1           [L,QSA]
+
+    RewriteRule ^(public)($|/) - [L,NC]
+
 </IfModule>

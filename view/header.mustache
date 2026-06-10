@@ -1,31 +1,46 @@
 <link rel="stylesheet" href="./public/css/header.css">
 
 <header>
-    <div class="logo">
+    <a href="?controller=home&method=index" class="logo">
         Preguntados
-    </div>
+    </a>
 
     <div class="header-right">
 
         {{#logueado}}
             <div class="header-perfil">
 
-        <a href="?controller=perfil&method=index"
-        class="avatar"
-        title="Ver perfil">
+                <a href="?controller=perfil&method=index"
+                   class="avatar"
+                   title="Ver perfil">
 
-            {{#foto_perfil}}
-                <img src="{{foto_perfil}}" alt="Foto de perfil">
-            {{/foto_perfil}}
-            {{^foto_perfil}}
-                {{inicial}}
-            {{/foto_perfil}}
+                    {{#foto_perfil}}
+                        <img src="{{foto_perfil}}" alt="Foto de perfil">
+                    {{/foto_perfil}}
 
-        </a>
+                    {{^foto_perfil}}
+                        {{inicial}}
+                    {{/foto_perfil}}
 
-                <span class="header-username">
-                    {{nombre_usuario}}
-                </span>
+                </a>
+
+                <div class="header-user-info">
+
+        <span class="header-username">
+            {{nombre_usuario}}
+        </span>
+
+                    <div class="header-stats">
+            <span class="header-puntaje">
+                {{puntaje_total}} pts
+            </span>
+
+                        <span class="header-nivel">
+                            {{nivel}}
+                        </span>
+                    </div>
+
+                </div>
 
             </div>
 
