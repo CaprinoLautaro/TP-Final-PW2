@@ -59,6 +59,7 @@ class PartidaController
     // ─────────────────────────────────────────────────────────────────
     public function nueva()
     {
+
         $this->verificarLogin();
 
         $usuarioId = $_SESSION['usuario']['id'];
@@ -72,6 +73,8 @@ class PartidaController
                 $ratio,
                 self::PREGUNTAS_POR_PARTIDA
             );
+        var_dump($preguntas);
+        die();
 
         if (empty($preguntas)) {
             $this->renderer->render(
@@ -94,6 +97,7 @@ class PartidaController
 
         header("Location: ?controller=partida&method=jugar");
         exit();
+
     }
 
     // ─────────────────────────────────────────────────────────────────
