@@ -6,17 +6,33 @@ class MyDatabase
 
     public function __construct($hostname, $username, $password, $database)
     {
-        $this->conexion = new mysqli($hostname, $username, $password, $database);
+        $this->conexion = new mysqli(
+            $hostname,
+            $username,
+            $password,
+            $database
+        );
+
+        // ← AGREGÁ ESTO
+        $this->conexion->set_charset("utf8mb4");
     }
 
     public function query($sql, $params = [])
     {
         $stmt = $this->conexion->prepare($sql);
+
         if (!empty($params)) {
-            $stmt->bind_param(str_repeat('s', count($params)), ...$params);
+            $stmt->bind_param(
+                str_repeat('s', count($params)),
+                ...$params
+            );
         }
+
         $stmt->execute();
-        return $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
+
+        return $stmt
+            ->get_result()
+            ->fetch_all(MYSQLI_ASSOC);
     }
 
     public function execute($sql, $params = [])
