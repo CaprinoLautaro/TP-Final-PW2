@@ -20,70 +20,43 @@ class PartidaModel
         return $this->database->lastInsertId();
     }
 
-    public function calcularRatioUsuario($usuarioId)
+    /**
+     * Devuelve la dificultad de preguntas que le corresponde al usuario
+     * según su nivel acumulado: Malo → facil, Bueno → media, Capo → dificil.
+     */
+    public function dificultadSegunNivel($usuarioId)
     {
         $resultado = $this->database->query(
-            "SELECT
-                COUNT(*)                          AS total,
-                SUM(es_correcta)                  AS correctas
-             FROM partidas_preguntas pp
-             JOIN partidas p ON pp.partida_id = p.id
-             WHERE p.usuario_id = ?",
+            "SELECT nivel FROM usuarios WHERE id = ?",
             [$usuarioId]
         );
 
-        $total     = (int) ($resultado[0]['total']     ?? 0);
-        $correctas = (int) ($resultado[0]['correctas'] ?? 0);
+        $nivel = strtolower($resultado[0]['nivel'] ?? 'malo');
 
-        if ($total === 0) {
-            return 0.5; 
+        switch ($nivel) {
+            case 'capo':  return 'dificil';
+            case 'bueno': return 'media';
+            default:      return 'facil';   // malo o null
         }
-
-        return round($correctas / $total, 2);
     }
 
-    public function nivelDesdeRatio($ratio)
+    public function seleccionarPreguntas($usuarioId, $dificultad, $cantidad = 10)
     {
-        if ($ratio < 0.3) return 'facil';
-        if ($ratio > 0.7) return 'dificil';
-        return 'media';
-    }
-
-    public function seleccionarPreguntas($usuarioId, $ratioUsuario, $cantidad = 10)
-    {
-        $nivel = $this->nivelDesdeRatio($ratioUsuario);
-
-        if ($nivel === 'facil') {
-            $condicionDificultad =
-                "(p.veces_vista = 0
-                  OR (p.veces_correcta / p.veces_vista) > 0.7)";
-        } elseif ($nivel === 'dificil') {
-            $condicionDificultad =
-                "(p.veces_vista > 0
-                  AND (p.veces_correcta / p.veces_vista) < 0.3)";
-        } else {
-            $condicionDificultad =
-                "(p.veces_vista = 0
-                  OR (
-                      (p.veces_correcta / p.veces_vista) >= 0.3
-                      AND
-                      (p.veces_correcta / p.veces_vista) <= 0.7
-                  ))";
-        }
-
+        // Primer intento: preguntas del nivel exacto no vistas aún
         $preguntas = $this->database->query(
             "SELECT
                 p.id,
                 p.enunciado,
+                p.dificultad,
                 p.veces_vista,
                 p.veces_correcta,
-                c.id    AS categoria_id,
+                c.id     AS categoria_id,
                 c.nombre AS categoria_nombre,
                 c.color  AS categoria_color
              FROM preguntas p
              JOIN categorias c ON p.categoria_id = c.id
-             WHERE p.estado = 'aprobada'
-               AND $condicionDificultad
+             WHERE p.estado    = 'aprobada'
+               AND p.dificultad = ?
                AND p.id NOT IN (
                    SELECT pv.pregunta_id
                    FROM preguntas_vistas pv
@@ -91,24 +64,23 @@ class PartidaModel
                )
              ORDER BY RAND()
              LIMIT ?",
-            [$usuarioId, $cantidad]
+            [$dificultad, $usuarioId, $cantidad]
         );
 
+        // Segundo intento: completar con cualquier dificultad no vista
         if (count($preguntas) < $cantidad) {
-            $idsYa = array_column($preguntas, 'id');
+            $idsYa  = array_column($preguntas, 'id');
             $faltan = $cantidad - count($preguntas);
-
-            $exclude = empty($idsYa)
-                ? "0"
-                : implode(',', array_map('intval', $idsYa));
+            $exclude = empty($idsYa) ? "0" : implode(',', array_map('intval', $idsYa));
 
             $complemento = $this->database->query(
                 "SELECT
                     p.id,
                     p.enunciado,
+                    p.dificultad,
                     p.veces_vista,
                     p.veces_correcta,
-                    c.id    AS categoria_id,
+                    c.id     AS categoria_id,
                     c.nombre AS categoria_nombre,
                     c.color  AS categoria_color
                  FROM preguntas p
@@ -128,21 +100,20 @@ class PartidaModel
             $preguntas = array_merge($preguntas, $complemento);
         }
 
+        // Último recurso: preguntas ya vistas (no quedan nuevas)
         if (count($preguntas) < $cantidad) {
             $idsYa  = array_column($preguntas, 'id');
             $faltan = $cantidad - count($preguntas);
-
-            $exclude = empty($idsYa)
-                ? "0"
-                : implode(',', array_map('intval', $idsYa));
+            $exclude = empty($idsYa) ? "0" : implode(',', array_map('intval', $idsYa));
 
             $ultimoRecurso = $this->database->query(
                 "SELECT
                     p.id,
                     p.enunciado,
+                    p.dificultad,
                     p.veces_vista,
                     p.veces_correcta,
-                    c.id    AS categoria_id,
+                    c.id     AS categoria_id,
                     c.nombre AS categoria_nombre,
                     c.color  AS categoria_color
                  FROM preguntas p
@@ -243,31 +214,59 @@ class PartidaModel
         );
     }
 
-    public function terminarPartida($partidaId, $usuarioId)
+    /**
+     * Calcula cuántos puntos se restan al perder según en qué pregunta ocurrió.
+     *   Pregunta 1 perdida  (pasadas=0) → -3
+     *   Pregunta 2 perdida  (pasadas=1) → -2
+     *   Pregunta 3+ perdida             → -1
+     *   Victoria            (null)      →  0
+     */
+    public function calcularPenalizacion($preguntasPasadas)
+    {
+        if ($preguntasPasadas === null) return 0;
+        if ($preguntasPasadas <= 0)    return 3;
+        if ($preguntasPasadas === 1)   return 2;
+        return 1;
+    }
+
+    public function terminarPartida($partidaId, $usuarioId, $preguntasPasadas = null)
     {
         $this->database->execute(
             "UPDATE partidas
-         SET estado = 'terminada',
-             terminada_en = NOW()
-         WHERE id = ?",
+             SET estado       = 'terminada',
+                 terminada_en = NOW()
+             WHERE id = ?",
             [$partidaId]
         );
 
         $resultado = $this->database->query(
-            "SELECT puntaje
-         FROM partidas
-         WHERE id = ?",
+            "SELECT puntaje FROM partidas WHERE id = ?",
             [$partidaId]
         );
 
         $puntaje = (int) ($resultado[0]['puntaje'] ?? 0);
 
-        $this->database->execute(
-            "UPDATE usuarios
-         SET puntaje_total = puntaje_total + ?
-         WHERE id = ?",
-            [$puntaje, $usuarioId]
-        );
+        // Sumar puntos ganados en la partida
+        if ($puntaje > 0) {
+            $this->database->execute(
+                "UPDATE usuarios
+                 SET puntaje_total = puntaje_total + ?
+                 WHERE id = ?",
+                [$puntaje, $usuarioId]
+            );
+        }
+
+        // Restar penalización si perdió (nunca baja de 0)
+        $penalizacion = $this->calcularPenalizacion($preguntasPasadas);
+        if ($penalizacion > 0) {
+            $this->database->execute(
+                "UPDATE usuarios
+                 SET puntaje_total = GREATEST(0, puntaje_total - ?)
+                 WHERE id = ?",
+                [$penalizacion, $usuarioId]
+            );
+        }
+
         $this->actualizarNivelUsuario($usuarioId);
 
         return $puntaje;

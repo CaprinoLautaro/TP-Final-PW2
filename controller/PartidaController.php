@@ -5,7 +5,7 @@ class PartidaController
     private $renderer;
     private $request;
     private $partidaModel;
-    
+
     private $userModel;
 
     const PREGUNTAS_POR_PARTIDA = 10;
@@ -64,13 +64,13 @@ class PartidaController
 
         $usuarioId = $_SESSION['usuario']['id'];
 
-        $ratio = $this->partidaModel
-            ->calcularRatioUsuario($usuarioId);
+        $dificultad = $this->partidaModel
+            ->dificultadSegunNivel($usuarioId);
 
         $preguntas = $this->partidaModel
             ->seleccionarPreguntas(
                 $usuarioId,
-                $ratio,
+                $dificultad,
                 self::PREGUNTAS_POR_PARTIDA
             );
 
@@ -191,7 +191,7 @@ class PartidaController
 
             if ($sesion['indice_actual'] >= $sesion['total']) {
                 $puntajeFinal = $this->partidaModel
-                    ->terminarPartida($sesion['id'], $usuarioId);
+                    ->terminarPartida($sesion['id'], $usuarioId, null);
                 $sesion['puntaje_final'] = $puntajeFinal;
                 $sesion['usuario'] =
                     $this->userModel->obtenerUsuarioPorId($usuarioId);
@@ -213,8 +213,12 @@ class PartidaController
                 'correcta_texto' => $correcta['texto'] ?? '—',
             ];
 
+            // $sesion['indice_actual'] ya fue incrementado en aciertos previos,
+            // por lo que refleja exactamente cuántas preguntas pasó antes de perder.
+            $preguntasPasadas = $sesion['indice_actual'];
+
             $puntajeFinal = $this->partidaModel
-                ->terminarPartida($sesion['id'], $usuarioId);
+                ->terminarPartida($sesion['id'], $usuarioId, $preguntasPasadas);
 
             $sesion['puntaje_final'] = $puntajeFinal;
             $sesion['usuario'] =
@@ -241,14 +245,23 @@ class PartidaController
 
         $gano = empty($sesion['respuesta_incorrecta']);
 
+        $penalizacion = $gano
+            ? 0
+            : $this->partidaModel->calcularPenalizacion(
+                $sesion['indice_actual'] ?? 0
+            );
+
         $datos = [
             "puntaje"              => $sesion['puntaje_final']
-                                      ?? $sesion['puntaje'],
+                ?? $sesion['puntaje'],
             "total_preguntas"      => $sesion['total'],
             "gano"                 => $gano,
-            "perdio"               => !$gano,   // Mustache no tiene NOT nativo
+            "perdio"               => !$gano,
             "correcta_texto"       => $sesion['respuesta_incorrecta']['correcta_texto']
-                                      ?? null,
+                ?? null,
+            "penalizacion"         => $penalizacion,
+            "hubo_penalizacion"    => $penalizacion > 0,
+            "penalizacion_plural"  => $penalizacion > 1,
         ];
 
         unset($_SESSION['partida']);
