@@ -73,8 +73,7 @@ class PartidaController
                 $ratio,
                 self::PREGUNTAS_POR_PARTIDA
             );
-        var_dump($preguntas);
-        die();
+
 
         if (empty($preguntas)) {
             $this->renderer->render(
