@@ -1,6 +1,7 @@
-
 <?php
-class HomeController {
+
+class HomeController
+{
 
     private $renderer;
     private $request;
@@ -13,6 +14,20 @@ class HomeController {
 
     public function index()
     {
-        $this->renderer->render('homeView', []);
+        session_start();
+
+        $mensajeExito =
+            $_SESSION['mensaje_exito'] ?? null;
+
+        unset($_SESSION['mensaje_exito']);
+
+        $this->renderer->render(
+            'homeView',
+            [
+                'mensaje_exito' => $mensajeExito
+            ]
+        );
     }
+
+
 }

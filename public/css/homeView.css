@@ -5,14 +5,14 @@
 }
 
 :root {
-    --bg:        #0f0f1a;
-    --surface:   #1a1a2e;
-    --card:      #16213e;
-    --accent:    #e94560;
-    --accent2:   #f5a623;
-    --text:      #eaeaea;
-    --muted:     #7a7a9a;
-    --radius:    14px;
+    --bg: #0f0f1a;
+    --surface: #1a1a2e;
+    --card: #16213e;
+    --accent: #e94560;
+    --accent2: #f5a623;
+    --text: #eaeaea;
+    --muted: #7a7a9a;
+    --radius: 14px;
 }
 
 body {
@@ -59,7 +59,7 @@ main {
 }
 
 .puntaje-badge {
-    background: rgba(0,0,0,0.25);
+    background: rgba(0, 0, 0, 0.25);
     border-radius: 10px;
     padding: 0.75rem 1.25rem;
     text-align: center;
@@ -273,3 +273,24 @@ main {
         text-align: center;
     }
 }
+
+.mensaje-exito {
+    background: linear-gradient(135deg, #28a745, #1e7e34);
+    color: white;
+    padding: 1rem 1.5rem;
+    border-radius: 12px;
+    margin-bottom: 1.5rem;
+
+    text-align: center;
+    font-weight: 700;
+    font-size: 1rem;
+
+    box-shadow: 0 4px 12px rgba(0, 0, 0, .25);
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+
+

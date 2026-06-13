@@ -95,11 +95,27 @@ class Configurator
             $this->getUserModel()
         );
     }
- 
+
+    public function getPreguntaController()
+    {
+        return new PreguntaController(
+            $this->getRenderer(),
+            new Request(),
+            $this->getPreguntaModel()
+        );
+    }
+
     private function getPartidaModel()
     {
         return new PartidaModel($this->getDatabase());
 
+    }
+
+    private function getPreguntaModel()
+    {
+        return new PreguntaModel(
+            $this->getDatabase()
+        );
     }
 
     private function getPerfilModel()

@@ -1,0 +1,128 @@
+*, *::before, *::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+:root {
+    --bg:        #0f0f1a;
+    --surface:   #1a1a2e;
+    --card:      #16213e;
+    --accent:    #e94560;
+    --accent2:   #f5a623;
+    --text:      #eaeaea;
+    --muted:     #7a7a9a;
+    --radius:    14px;
+}
+
+body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Nunito', sans-serif;
+    min-height: 100vh;
+}
+
+/* ── MAIN ── */
+main {
+    max-width: 860px;
+    margin: 0 auto;
+    padding: 2rem 1.25rem 4rem;
+}
+
+
+.form-card {
+    background: var(--card);
+    border-radius: var(--radius);
+    padding: 2rem;
+    border: 1px solid #2a2a4a;
+}
+
+.section-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 2rem;
+    letter-spacing: 1px;
+    margin-bottom: 1.5rem;
+}
+
+.campo {
+    margin-bottom: 1.25rem;
+}
+
+.campo label {
+    display: block;
+    margin-bottom: 0.4rem;
+    color: var(--muted);
+    font-size: 0.85rem;
+    font-weight: 700;
+    text-transform: uppercase;
+}
+
+.campo input,
+.campo textarea,
+.campo select {
+    width: 100%;
+    padding: 0.9rem;
+    border-radius: 8px;
+    border: 1px solid #2a2a4a;
+    background: var(--surface);
+    color: var(--text);
+    font-family: 'Nunito', sans-serif;
+}
+
+.campo textarea {
+    min-height: 120px;
+    resize: vertical;
+}
+
+.campo select option {
+    background: var(--surface);
+    color: var(--text);
+}
+
+.opciones-grid {
+    display: grid;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+}
+
+.btn-enviar {
+    background: #28a745;
+    color: white;
+}
+
+.btn-cancelar {
+    background: var(--accent);
+    color: white;
+}
+
+.form-actions {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+}
+.btn-main {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: .5rem;
+    padding: 1.1rem;
+    border-radius: var(--radius);
+    font-family: 'Nunito', sans-serif;
+    font-size: 1rem;
+    font-weight: 800;
+    cursor: pointer;
+    border: none;
+    text-decoration: none;
+    transition: transform .15s, filter .15s;
+    flex: 1;
+}
+
+.btn-main:hover {
+    filter: brightness(1.1);
+}
+
+.btn-main:active {
+    transform: scale(.97);
+}
+
+
