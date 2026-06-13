@@ -317,7 +317,7 @@ class PartidaModel
             ?? 'Principiante';
     }
 
-    public function actualizarNivelUsuario($usuarioId)
+   /* public function actualizarNivelUsuario($usuarioId)
     {
         $resultado = $this->database->query(
             "SELECT puntaje_total
@@ -342,7 +342,49 @@ class PartidaModel
          WHERE id = ?",
             [$nivel, $usuarioId]
         );
-    }
+    }*/
 
+    public function actualizarNivelUsuario($usuarioId)
+    {
+        $resultado = $this->database->query(
+            "SELECT
+            COUNT(*) AS total,
+            SUM(CASE WHEN pp.es_correcta = 1 THEN 1 ELSE 0 END) AS correctas
+         FROM partidas_preguntas pp
+         INNER JOIN partidas p
+            ON p.id = pp.partida_id
+         WHERE p.usuario_id = ?",
+            [$usuarioId]
+        );
+
+        $total = (int) ($resultado[0]['total'] ?? 0);
+        $correctas = (int) ($resultado[0]['correctas'] ?? 0);
+
+        if ($total === 0) {
+
+            $nivel = 'Malo';
+
+        } else {
+
+            $ratio = $correctas / $total;
+
+            if ($ratio > 0.70) {
+                $nivel = 'Capo';
+            }
+            elseif ($ratio >= 0.30) {
+                $nivel = 'Bueno';
+            }
+            else {
+                $nivel = 'Malo';
+            }
+        }
+
+        $this->database->execute(
+            "UPDATE usuarios
+         SET nivel = ?
+         WHERE id = ?",
+            [$nivel, $usuarioId]
+        );
+    }
 
 }
