@@ -1,5 +1,4 @@
 <?php
-
 class PartidaModel
 {
     private $database;
@@ -34,9 +33,12 @@ class PartidaModel
         $nivel = strtolower($resultado[0]['nivel'] ?? 'malo');
 
         switch ($nivel) {
-            case 'capo':  return 'dificil';
-            case 'bueno': return 'media';
-            default:      return 'facil';   // malo o null
+            case 'capo':
+                return 'dificil';
+            case 'bueno':
+                return 'media';
+            default:
+                return 'facil';   // malo o null
         }
     }
 
@@ -69,7 +71,7 @@ class PartidaModel
 
         // Segundo intento: completar con cualquier dificultad no vista
         if (count($preguntas) < $cantidad) {
-            $idsYa  = array_column($preguntas, 'id');
+            $idsYa = array_column($preguntas, 'id');
             $faltan = $cantidad - count($preguntas);
             $exclude = empty($idsYa) ? "0" : implode(',', array_map('intval', $idsYa));
 
@@ -102,7 +104,7 @@ class PartidaModel
 
         // Último recurso: preguntas ya vistas (no quedan nuevas)
         if (count($preguntas) < $cantidad) {
-            $idsYa  = array_column($preguntas, 'id');
+            $idsYa = array_column($preguntas, 'id');
             $faltan = $cantidad - count($preguntas);
             $exclude = empty($idsYa) ? "0" : implode(',', array_map('intval', $idsYa));
 
@@ -146,49 +148,36 @@ class PartidaModel
     {
         $this->database->execute(
             "INSERT IGNORE INTO preguntas_vistas (usuario_id, pregunta_id)
-             VALUES (?, ?)",
-            [$usuarioId, $preguntaId]
+             VALUES (?, ?)", [$usuarioId, $preguntaId]
         );
 
         $this->database->execute(
             "UPDATE preguntas
              SET veces_vista = veces_vista + 1
-             WHERE id = ?",
-            [$preguntaId]
+             WHERE id = ?", [$preguntaId]
         );
+        $this->actualizarNivelDificultadDePreguntas($preguntaId);
     }
 
-    public function registrarRespuesta(
-        $partidaId,
-        $preguntaId,
-        $opcionElegidaId,
-        $esCorrecta
-    ) {
-        $this->database->execute(
-            "INSERT INTO partidas_preguntas
-                (partida_id, pregunta_id, opcion_elegida_id, es_correcta)
-             VALUES (?, ?, ?, ?)",
-            [$partidaId, $preguntaId, $opcionElegidaId, $esCorrecta ? 1 : 0]
-        );
+    public function registrarRespuesta($partidaId, $preguntaId, $opcionElegidaId, $esCorrecta)
+    {
+        $this->database->execute("INSERT INTO partidas_preguntas (partida_id, pregunta_id, opcion_elegida_id, es_correcta)
+                                  VALUES (?, ?, ?, ?)", [$partidaId, $preguntaId, $opcionElegidaId, $esCorrecta ? 1 : 0]);
 
         if ($esCorrecta) {
             $this->database->execute(
                 "UPDATE preguntas
                  SET veces_correcta = veces_correcta + 1
-                 WHERE id = ?",
-                [$preguntaId]
+                 WHERE id = ?", [$preguntaId]
             );
         }
+        $this->actualizarNivelDificultadDePreguntas($preguntaId);
     }
 
     public function esOpcionCorrecta($opcionId)
     {
-        $resultado = $this->database->query(
-            "SELECT es_correcta FROM opciones WHERE id = ?",
-            [$opcionId]
-        );
-
-        return isset($resultado[0]) && (bool) $resultado[0]['es_correcta'];
+        $resultado = $this->database->query("SELECT es_correcta FROM opciones WHERE id = ?", [$opcionId]);
+        return isset($resultado[0]) && (bool)$resultado[0]['es_correcta'];
     }
 
     public function obtenerOpcionCorrecta($preguntaId)
@@ -200,7 +189,6 @@ class PartidaModel
              LIMIT 1",
             [$preguntaId]
         );
-
         return $resultado[0] ?? null;
     }
 
@@ -224,8 +212,8 @@ class PartidaModel
     public function calcularPenalizacion($preguntasPasadas)
     {
         if ($preguntasPasadas === null) return 0;
-        if ($preguntasPasadas <= 0)    return 3;
-        if ($preguntasPasadas === 1)   return 2;
+        if ($preguntasPasadas <= 0) return 3;
+        if ($preguntasPasadas === 1) return 2;
         return 1;
     }
 
@@ -233,18 +221,13 @@ class PartidaModel
     {
         $this->database->execute(
             "UPDATE partidas
-             SET estado       = 'terminada',
-                 terminada_en = NOW()
-             WHERE id = ?",
-            [$partidaId]
+             SET estado = 'terminada', terminada_en = NOW()
+             WHERE id = ?", [$partidaId]
         );
 
-        $resultado = $this->database->query(
-            "SELECT puntaje FROM partidas WHERE id = ?",
-            [$partidaId]
-        );
+        $resultado = $this->database->query("SELECT puntaje FROM partidas WHERE id = ?", [$partidaId]);
 
-        $puntaje = (int) ($resultado[0]['puntaje'] ?? 0);
+        $puntaje = (int)($resultado[0]['puntaje'] ?? 0);
 
         // Sumar puntos ganados en la partida
         if ($puntaje > 0) {
@@ -266,125 +249,119 @@ class PartidaModel
                 [$penalizacion, $usuarioId]
             );
         }
-
         $this->actualizarNivelUsuario($usuarioId);
-
         return $puntaje;
     }
 
     public function obtenerPuntaje($partidaId)
     {
-        $resultado = $this->database->query(
-            "SELECT puntaje FROM partidas WHERE id = ?",
-            [$partidaId]
-        );
-
-        return (int) ($resultado[0]['puntaje'] ?? 0);
+        $resultado = $this->database->query("SELECT puntaje FROM partidas WHERE id = ?", [$partidaId]);
+        return (int)($resultado[0]['puntaje'] ?? 0);
     }
 
 
     public function obtenerPreguntaPorId($preguntaId)
     {
         $resultado = $this->database->query(
-            "SELECT
-                p.id,
-                p.enunciado,
-                p.veces_vista,
-                p.veces_correcta,
+            "SELECT p.id, p.enunciado, p.veces_vista, p.veces_correcta,
                 c.id     AS categoria_id,
                 c.nombre AS categoria_nombre,
                 c.color  AS categoria_color
-             FROM preguntas p
-             JOIN categorias c ON p.categoria_id = c.id
+             FROM preguntas p JOIN categorias c ON p.categoria_id = c.id
              WHERE p.id = ? AND p.estado = 'aprobada'
-             LIMIT 1",
-            [$preguntaId]
+             LIMIT 1", [$preguntaId]
         );
-
         return $resultado[0] ?? null;
     }
 
     public function obtenerNivelUsuario($usuarioId)
     {
-        $resultado = $this->database->query(
-            "SELECT nivel
-         FROM usuarios
-         WHERE id = ?",
-            [$usuarioId]
-        );
-
-        return $resultado[0]['nivel']
-            ?? 'Principiante';
+        $resultado = $this->database->query("SELECT nivel FROM usuarios WHERE id = ?", [$usuarioId]);
+        return $resultado[0]['nivel'] ?? 'Principiante';
     }
 
-   /* public function actualizarNivelUsuario($usuarioId)
-    {
-        $resultado = $this->database->query(
-            "SELECT puntaje_total
-         FROM usuarios
-         WHERE id = ?",
-            [$usuarioId]
-        );
+    /* public function actualizarNivelUsuario($usuarioId)
+     {
+         $resultado = $this->database->query(
+             "SELECT puntaje_total
+          FROM usuarios
+          WHERE id = ?",
+             [$usuarioId]
+         );
 
-        $puntaje = (int) ($resultado[0]['puntaje_total'] ?? 0);
+         $puntaje = (int) ($resultado[0]['puntaje_total'] ?? 0);
 
-        $nivel = 'malo';
+         $nivel = 'malo';
 
-        if ($puntaje >= 15) {
-            $nivel = 'capo';
-        } elseif ($puntaje >= 10) {
-            $nivel = 'bueno';
-        }
+         if ($puntaje >= 15) {
+             $nivel = 'capo';
+         } elseif ($puntaje >= 10) {
+             $nivel = 'bueno';
+         }
 
-        $this->database->execute(
-            "UPDATE usuarios
-         SET nivel = ?
-         WHERE id = ?",
-            [$nivel, $usuarioId]
-        );
-    }*/
+         $this->database->execute(
+             "UPDATE usuarios
+          SET nivel = ?
+          WHERE id = ?",
+             [$nivel, $usuarioId]
+         );
+     }*/
 
     public function actualizarNivelUsuario($usuarioId)
     {
         $resultado = $this->database->query(
-            "SELECT
-            COUNT(*) AS total,
-            SUM(CASE WHEN pp.es_correcta = 1 THEN 1 ELSE 0 END) AS correctas
-         FROM partidas_preguntas pp
-         INNER JOIN partidas p
-            ON p.id = pp.partida_id
-         WHERE p.usuario_id = ?",
-            [$usuarioId]
+            "SELECT COUNT(*) AS total,
+             SUM(CASE WHEN pp.es_correcta = 1 THEN 1 ELSE 0 END) AS correctas
+             FROM partidas_preguntas pp INNER JOIN partidas p ON p.id = pp.partida_id
+             WHERE p.usuario_id = ?", [$usuarioId]
         );
 
-        $total = (int) ($resultado[0]['total'] ?? 0);
-        $correctas = (int) ($resultado[0]['correctas'] ?? 0);
+        $total = (int)($resultado[0]['total'] ?? 0);
+        $correctas = (int)($resultado[0]['correctas'] ?? 0);
 
-        if ($total === 0) {
-
+        if ($total === 0)
             $nivel = 'Malo';
-
-        } else {
-
+         else {
             $ratio = $correctas / $total;
 
             if ($ratio > 0.70) {
                 $nivel = 'Capo';
-            }
-            elseif ($ratio >= 0.30) {
+            } elseif ($ratio >= 0.30) {
                 $nivel = 'Bueno';
-            }
-            else {
+            } else {
                 $nivel = 'Malo';
             }
         }
 
         $this->database->execute(
             "UPDATE usuarios
-         SET nivel = ?
-         WHERE id = ?",
-            [$nivel, $usuarioId]
+             SET nivel = ?
+             WHERE id = ?", [$nivel, $usuarioId]
         );
     }
 
+    private function actualizarNivelDificultadDePreguntas($preguntaId)
+    {
+        $resultado = $this->database->query("SELECT veces_vista, veces_correcta FROM preguntas WHERE id = ?;", [$preguntaId]);
+
+        if (!empty($resultado) && $resultado[0]['veces_vista'] > 0) {
+            $porcentaje = ($resultado[0]['veces_correcta'] / $resultado[0]['veces_vista']) * 100;
+
+            switch (true) {
+                case $porcentaje >= 70:
+                    $dificultad = 'facil';
+                    break;
+                case $porcentaje <= 30:
+                    $dificultad = 'dificil';
+                    break;
+                default:
+                    $dificultad = 'media';
+                    break;
+            }
+
+            $this->database->execute("UPDATE preguntas 
+                                      SET dificultad = ? 
+                                      WHERE id = ?;", [$dificultad, $preguntaId]);
+        }
+    }
 }
