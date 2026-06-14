@@ -156,7 +156,6 @@ class PartidaModel
              SET veces_vista = veces_vista + 1
              WHERE id = ?", [$preguntaId]
         );
-        $this->actualizarNivelDificultadDePreguntas($preguntaId);
     }
 
     public function registrarRespuesta($partidaId, $preguntaId, $opcionElegidaId, $esCorrecta)
