@@ -21,6 +21,10 @@
         <span class="progreso">
             Pregunta <strong>{{numero_pregunta}}</strong> de <strong>{{total_preguntas}}</strong>
         </span>
+        <div class="timer-container">
+            <span class="timer-icon">⏱️</span>
+            <p class="timer-text">Tiempo restante: <span id="timer" class="timer-count">{{tiempo_restante}}</span>s</p>
+        </div>
         <span class="puntaje-actual">
             Puntaje: <strong>{{puntaje_actual}}</strong>
         </span>
@@ -64,6 +68,42 @@
 </main>
 
 {{>footer}}
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        let tiempoRestante = parseInt("{{tiempo_restante}}") || 15;
+        const selectorTimer = document.getElementById('timer');
+        const formulario = document.querySelector('.opciones-form');
+
+        const cuentaRegresiva = setInterval(() => {
+            tiempoRestante--;
+
+            if (selectorTimer) {
+                selectorTimer.textContent = tiempoRestante;
+            }
+
+            if (tiempoRestante <= 5 && selectorTimer) {
+                selectorTimer.style.color = '#E74C3C';
+                selectorTimer.style.fontWeight = '800';
+            }
+
+            if (tiempoRestante <= 0) {
+                clearInterval(cuentaRegresiva); // Frenamos el reloj
+                tiempoTerminado();
+            }
+        }, 1000);
+
+        function tiempoTerminado() {
+            const inputTiempoAgotado = document.createElement('input');
+            inputTiempoAgotado.type = 'hidden';
+            inputTiempoAgotado.name = 'tiempo_agotado';
+            inputTiempoAgotado.value = '1';
+            formulario.appendChild(inputTiempoAgotado);
+
+            formulario.submit();
+        }
+    });
+</script>
 
 </body>
 </html>

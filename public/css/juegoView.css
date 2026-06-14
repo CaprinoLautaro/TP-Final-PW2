@@ -158,3 +158,38 @@ body {
         font-size: 1.05rem;
     }
 }
+.timer-container {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background-color: rgba(231, 76, 60, 0.15);
+    border: 1px solid rgba(231, 76, 60, 0.3);
+    padding: 6px 14px;
+    border-radius: 20px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+}
+
+.timer-icon {
+    font-size: 1.1rem;
+    animation: tictac 1s infinite alternate;
+}
+
+.timer-text {
+    margin: 0;
+    font-family: 'Nunito', sans-serif;
+    font-weight: 600;
+    font-size: 0.95rem;
+    color: #cbd5e1;
+    letter-spacing: 0.5px;
+}
+
+.timer-count {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.3rem;
+    color: #e74c3c;
+    margin: 0 2px;
+    display: inline-block;
+    min-width: 20px;
+    text-align: center;
+}

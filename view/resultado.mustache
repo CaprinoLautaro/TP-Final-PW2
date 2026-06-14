@@ -27,8 +27,7 @@
         </div>
     {{/gano}}
 
-    {{#perdio}}
-        <!-- ── PERDIÓ: se equivocó ── -->
+    {{#perdio_por_error}}
         <div class="resultado-card resultado-perdio">
             <div class="resultado-icono">💥</div>
             <h2 class="resultado-titulo">¡Mala suerte!</h2>
@@ -50,7 +49,32 @@
                 </div>
             {{/hubo_penalizacion}}
         </div>
-    {{/perdio}}
+    {{/perdio_por_error}}
+
+
+    {{#perdio_por_tiempo}}
+        <div class="resultado-card resultado-perdio">
+            <div class="resultado-icono">⏰</div>
+            <h2 class="resultado-titulo">¡Se te acabó el tiempo!</h2>
+            <p class="resultado-subtitulo">Fuiste muy lento y los 15 segundos volaron</p>
+
+            <div class="puntaje-grande">
+                <span class="puntaje-numero">{{puntaje}}</span>
+                <span class="puntaje-label">puntos acumulados</span>
+            </div>
+
+            <div class="respuesta-correcta-box">
+                <p class="respuesta-correcta-label">La respuesta correcta era:</p>
+                <p class="respuesta-correcta-texto">{{correcta_texto}}</p>
+            </div>
+
+            {{#hubo_penalizacion}}
+                <div class="penalizacion-box">
+                    <p class="penalizacion-texto">📉 Perdiste <strong>{{penalizacion}} punto{{#penalizacion_plural}}s{{/penalizacion_plural}}</strong> por esta derrota</p>
+                </div>
+            {{/hubo_penalizacion}}
+        </div>
+    {{/perdio_por_tiempo}}
 
     <!-- ── Acciones ── -->
     <div class="resultado-acciones">

@@ -121,6 +121,22 @@ class PartidaController
         }
 
         $preguntaId   = $sesion['pregunta_ids'][$indice];
+        $ahora = time();
+
+        if (!isset($_SESSION['partida']['pregunta_actual_id']) || $_SESSION['partida']['pregunta_actual_id'] !== $preguntaId) {
+            $_SESSION['partida']['pregunta_actual_id'] = $preguntaId;
+            $_SESSION['partida']['pregunta_limite']    = $ahora + 15;
+            $tiempoRestante = 15;
+        } else {
+            $limiteOriginal = $_SESSION['partida']['pregunta_limite'];
+            $tiempoRestante = $limiteOriginal - $ahora;
+
+            if ($tiempoRestante <= 0) {
+                $this->forzarDerrotaPorTiempo($preguntaId);
+                exit();
+            }
+        }
+
         $preguntaFila = $this->partidaModel
             ->obtenerPreguntaPorId($preguntaId);
 
@@ -149,7 +165,14 @@ class PartidaController
             "total_preguntas"   => $sesion['total'],
             "puntaje_actual"    => $sesion['puntaje'],
             "porcentaje_progreso" => $porcentaje,
+            "tiempo_restante"    => $tiempoRestante,
         ]);
+    }
+
+    private function forzarDerrotaPorTiempo($preguntaId){
+        $_POST['tiempo_agotado'] = '1';
+        $_POST['pregunta_id'] = $preguntaId;
+        $this->responder();
     }
 
     // ─────────────────────────────────────────────────────────────────
@@ -166,15 +189,23 @@ class PartidaController
 
         $sesion     = &$_SESSION['partida'];
         $usuarioId  = $_SESSION['usuario']['id'];
-        $opcionId   = (int) $this->request->post("opcion_id");
-        $preguntaId = (int) $this->request->post("pregunta_id");
 
-        if (!$opcionId || !$preguntaId) {
-            header("Location: ?controller=partida&method=jugar");
-            exit();
+        $tiempoAgotado = $this->request->post("tiempo_agotado") === "1";
+
+        if($tiempoAgotado) {
+            $opcionId = null;
+            $preguntaId = (int) $this->request->post("pregunta_id");
+        }else{
+            $opcionId = (int) $this->request->post("opcion_id");
+            $preguntaId = (int) $this->request->post("pregunta_id");
+
+            if(!$opcionId || !$preguntaId) {
+                header("Location: ?controller=partida&method=jugar");
+                exit();
+            }
         }
 
-        $esCorrecta = $this->partidaModel->esOpcionCorrecta($opcionId);
+        $esCorrecta = !$tiempoAgotado && $this->partidaModel->esOpcionCorrecta($opcionId);
 
         $this->partidaModel->registrarRespuesta(
             $sesion['id'],
@@ -199,7 +230,7 @@ class PartidaController
                 header("Location: ?controller=partida&method=resultado");
                 exit();
             }
-
+            unset($sesion['pregunta_actual_id']);
             header("Location: ?controller=partida&method=jugar");
             exit();
 
@@ -207,6 +238,13 @@ class PartidaController
 
             $correcta = $this->partidaModel
                 ->obtenerOpcionCorrecta($preguntaId);
+
+            if($tiempoAgotado){
+                $sesion['motivo_derrota'] = 'tiempo';
+            }else{
+                $sesion['motivo_derrota'] = 'error';
+            }
+
 
             $sesion['respuesta_incorrecta'] = [
                 'pregunta_id'    => $preguntaId,
@@ -251,12 +289,19 @@ class PartidaController
                 $sesion['indice_actual'] ?? 0
             );
 
+        $motivoDerrota = $sesion['motivo_derrota'] ?? '';
+        $perdioPorTiempo = !$gano && $motivoDerrota === 'tiempo';
+        $perdioPorError = !$gano && $motivoDerrota !== 'tiempo';
+
         $datos = [
             "puntaje"              => $sesion['puntaje_final']
                 ?? $sesion['puntaje'],
             "total_preguntas"      => $sesion['total'],
             "gano"                 => $gano,
             "perdio"               => !$gano,
+            "perdio_por_tiempo"     => $perdioPorTiempo,
+            "perdio_por_error"     => $perdioPorError,
+
             "correcta_texto"       => $sesion['respuesta_incorrecta']['correcta_texto']
                 ?? null,
             "penalizacion"         => $penalizacion,
