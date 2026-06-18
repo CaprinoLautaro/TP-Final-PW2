@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Preguntados – Girando la ruleta</title>
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="./public/css/ruletaView.css">
+</head>
+<body>
+
+{{>header}}
+
+<main class="ruleta-main">
+
+    <span class="ruleta-progreso">
+        Pregunta <strong>{{numero_pregunta}}</strong> de <strong>{{total_preguntas}}</strong>
+    </span>
+
+    <h2 class="ruleta-titulo">¡Girando la ruleta!</h2>
+
+    <div class="ruleta-wrapper">
+        <div class="ruleta-flecha">▼</div>
+
+        <div
+            id="ruleta-disco"
+            class="ruleta-disco"
+            style="background: {{gradiente_css}};"
+        ></div>
+    </div>
+
+    <p id="ruleta-resultado" class="ruleta-resultado" style="color: {{categoria_ganadora_color}}">
+        &nbsp;
+    </p>
+
+    <noscript>
+        <p class="ruleta-categoria-fallback">
+            Categoría: <strong>{{categoria_ganadora_nombre}}</strong>
+        </p>
+        <a href="?controller=partida&method=jugar" class="btn-main btn-jugar">
+            Continuar
+        </a>
+    </noscript>
+
+</main>
+
+{{>footer}}
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const disco = document.getElementById('ruleta-disco');
+        const resultado = document.getElementById('ruleta-resultado');
+        const duracionMs = parseInt("{{duracion_ms}}") || 3000;
+        const rotacionFinal = parseFloat("{{rotacion_final}}") || 0;
+        const categoriaGanadora = "{{categoria_ganadora_nombre}}";
+
+        disco.style.transitionDuration = (duracionMs / 1000) + "s";
+
+        requestAnimationFrame(() => {
+            setTimeout(() => {
+                disco.style.transform = "rotate(" + rotacionFinal + "deg)";
+            }, 50);
+        });
+
+        setTimeout(() => {
+            resultado.textContent = "¡" + categoriaGanadora + "!";
+        }, duracionMs);
+
+        setTimeout(() => {
+            window.location.href = "?controller=partida&method=jugar";
+        }, duracionMs + 600);
+    });
+</script>
+
+</body>
+</html>

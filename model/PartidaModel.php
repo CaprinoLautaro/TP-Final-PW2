@@ -133,6 +133,86 @@ class PartidaModel
         return $preguntas;
     }
 
+    /**
+     * Selecciona UNA pregunta dentro de la categoría que salió en la ruleta.
+     * Mismo esquema de fallback en 3 niveles que seleccionarPreguntas(), pero
+     * acotado siempre a la categoría ganadora (para no romper la promesa visual
+     * de la ruleta).
+     *
+     * Depende de que registrarVista() ya haya marcado como vistas las preguntas
+     * anteriores de la partida (eso es lo que evita repeticiones dentro del
+     * mismo juego, igual que pasaba antes con el NOT IN de preguntas_vistas).
+     */
+    public function seleccionarPreguntaDeCategoria($usuarioId, $categoriaId, $dificultad)
+    {
+        // 1) Categoría + dificultad exacta, no vista
+        $preguntas = $this->database->query(
+            "SELECT
+                p.id, p.enunciado, p.dificultad, p.veces_vista, p.veces_correcta,
+                c.id     AS categoria_id,
+                c.nombre AS categoria_nombre,
+                c.color  AS categoria_color
+             FROM preguntas p
+             JOIN categorias c ON p.categoria_id = c.id
+             WHERE p.estado     = 'aprobada'
+               AND p.categoria_id = ?
+               AND p.dificultad   = ?
+               AND p.id NOT IN (
+                   SELECT pv.pregunta_id
+                   FROM preguntas_vistas pv
+                   WHERE pv.usuario_id = ?
+               )
+             ORDER BY RAND()
+             LIMIT 1",
+            [$categoriaId, $dificultad, $usuarioId]
+        );
+
+        // 2) Misma categoría, cualquier dificultad, no vista
+        if (empty($preguntas)) {
+            $preguntas = $this->database->query(
+                "SELECT
+                    p.id, p.enunciado, p.dificultad, p.veces_vista, p.veces_correcta,
+                    c.id     AS categoria_id,
+                    c.nombre AS categoria_nombre,
+                    c.color  AS categoria_color
+                 FROM preguntas p
+                 JOIN categorias c ON p.categoria_id = c.id
+                 WHERE p.estado     = 'aprobada'
+                   AND p.categoria_id = ?
+                   AND p.id NOT IN (
+                       SELECT pv.pregunta_id
+                       FROM preguntas_vistas pv
+                       WHERE pv.usuario_id = ?
+                   )
+                 ORDER BY RAND()
+                 LIMIT 1",
+                [$categoriaId, $usuarioId]
+            );
+        }
+
+        // 3) Último recurso: misma categoría aunque ya esté vista
+        //    (preferimos repetir una pregunta antes que mostrar una categoría
+        //    distinta a la que salió en la ruleta)
+        if (empty($preguntas)) {
+            $preguntas = $this->database->query(
+                "SELECT
+                    p.id, p.enunciado, p.dificultad, p.veces_vista, p.veces_correcta,
+                    c.id     AS categoria_id,
+                    c.nombre AS categoria_nombre,
+                    c.color  AS categoria_color
+                 FROM preguntas p
+                 JOIN categorias c ON p.categoria_id = c.id
+                 WHERE p.estado     = 'aprobada'
+                   AND p.categoria_id = ?
+                 ORDER BY RAND()
+                 LIMIT 1",
+                [$categoriaId]
+            );
+        }
+
+        return $preguntas[0] ?? null;
+    }
+
     public function obtenerOpciones($preguntaId)
     {
         return $this->database->query(
@@ -258,6 +338,43 @@ class PartidaModel
         return (int)($resultado[0]['puntaje'] ?? 0);
     }
 
+    /**
+     * Trae las últimas $cantidad partidas terminadas del usuario, para
+     * mostrar en el listado "Mis partidas" del home.
+     *
+     * No hay un campo "gano/perdio" en la tabla: se infiere de puntaje.
+     * Como cada pregunta correcta suma 1 y un solo error termina la
+     * partida, la única forma de llegar a $totalPreguntas puntos es
+     * habiendo respondido bien las 10 (ganó la partida completa).
+     */
+    public function obtenerUltimasPartidas($usuarioId, $cantidad = 3, $totalPreguntas = 10)
+    {
+        $filas = $this->database->query(
+            "SELECT puntaje, terminada_en
+             FROM partidas
+             WHERE usuario_id = ?
+               AND estado = 'terminada'
+             ORDER BY terminada_en DESC
+             LIMIT ?",
+            [$usuarioId, $cantidad]
+        );
+
+        $partidas = [];
+        foreach ($filas as $fila) {
+            $puntaje = (int) $fila['puntaje'];
+            $gano    = $puntaje >= $totalPreguntas;
+
+            $partidas[] = [
+                'fecha'     => date('d/m/Y', strtotime($fila['terminada_en'])),
+                'detalle'   => "{$puntaje}/{$totalPreguntas} preguntas respondidas",
+                'resultado' => $gano ? 'ganada' : 'perdida',
+                'puntaje'   => $puntaje,
+            ];
+        }
+
+        return $partidas;
+    }
+
 
     public function obtenerPreguntaPorId($preguntaId)
     {
@@ -320,7 +437,7 @@ class PartidaModel
 
         if ($total === 0)
             $nivel = 'Malo';
-         else {
+        else {
             $ratio = $correctas / $total;
 
             if ($ratio > 0.70) {

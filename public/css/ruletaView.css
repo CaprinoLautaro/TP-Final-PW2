@@ -1,0 +1,154 @@
+*, *::before, *::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+:root {
+    --bg: #0f0f1a;
+    --surface: #1a1a2e;
+    --card: #16213e;
+    --accent: #e94560;
+    --accent2: #f5a623;
+    --text: #eaeaea;
+    --muted: #7a7a9a;
+    --radius: 14px;
+}
+
+body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Nunito', sans-serif;
+    min-height: 100vh;
+}
+
+/* ── MAIN ── */
+.ruleta-main {
+    max-width: 860px;
+    margin: 0 auto;
+    padding: 3rem 1.25rem 4rem;
+    min-height: 70vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 1.5rem;
+    text-align: center;
+}
+
+.ruleta-progreso {
+    font-size: 0.8rem;
+    font-weight: 700;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.ruleta-titulo {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 2.2rem;
+    letter-spacing: 1px;
+    color: var(--text);
+}
+
+/* ── RULETA ── */
+.ruleta-wrapper {
+    position: relative;
+    width: 280px;
+    height: 280px;
+}
+
+.ruleta-flecha {
+    position: absolute;
+    top: -8px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 2rem;
+    line-height: 1;
+    color: var(--accent2);
+    z-index: 2;
+    filter: drop-shadow(0 2px 3px rgba(0, 0, 0, 0.4));
+}
+
+.ruleta-disco {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    border: 6px solid var(--card);
+    box-shadow:
+            0 8px 30px rgba(0, 0, 0, 0.5),
+            inset 0 0 0 2px rgba(255, 255, 255, 0.06);
+    transform: rotate(0deg);
+    transition-property: transform;
+    transition-timing-function: cubic-bezier(0.2, 0.6, 0.15, 1);
+    /* transition-duration la fija el JS para que coincida con duracion_ms */
+}
+
+.ruleta-disco::after {
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 26px;
+    height: 26px;
+    background: var(--card);
+    border: 3px solid var(--accent2);
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.ruleta-resultado {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.9rem;
+    letter-spacing: 1px;
+    min-height: 2.4rem;
+}
+
+.ruleta-categoria-fallback {
+    font-size: 1.05rem;
+    color: var(--text);
+}
+
+/* ── BOTÓN (mismo estilo que el resto del proyecto) ── */
+.btn-main {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.6rem;
+    padding: 1.1rem;
+    border-radius: var(--radius);
+    font-family: 'Nunito', sans-serif;
+    font-size: 1rem;
+    font-weight: 800;
+    cursor: pointer;
+    border: none;
+    text-decoration: none;
+    transition: transform 0.15s, filter 0.15s;
+}
+
+.btn-main:active {
+    transform: scale(0.97);
+}
+
+.btn-main:hover {
+    filter: brightness(1.1);
+}
+
+.btn-jugar {
+    background: var(--accent);
+    color: #fff;
+    font-size: 1.15rem;
+}
+
+/* ── RESPONSIVE ── */
+@media (max-width: 480px) {
+    .ruleta-wrapper {
+        width: 220px;
+        height: 220px;
+    }
+
+    .ruleta-titulo {
+        font-size: 1.8rem;
+    }
+}

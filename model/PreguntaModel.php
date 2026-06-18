@@ -11,10 +11,10 @@ class PreguntaModel
     public function obtenerCategorias()
     {
         return $this->database->query(
-            "SELECT id, nombre
+            "SELECT id, nombre, color
              FROM categorias
              WHERE activa = 1
-             ORDER BY nombre"
+             ORDER BY id"
         );
     }
     public function crearPregunta(

@@ -17,7 +17,11 @@ class Configurator
 
     public function getHomeController()
     {
-        return new homeController($this->getRenderer(), new Request());
+        return new homeController(
+            $this->getRenderer(),
+            new Request(),
+            $this->getPartidaModel()
+        );
     }
 
     public function getRankingController()
@@ -42,10 +46,10 @@ class Configurator
 
     private function getRenderer()
     {
-    return new MustacheRenderer(
-        __DIR__ . '/../view',
-        $this->getDatabase()  
-    );    
+        return new MustacheRenderer(
+            __DIR__ . '/../view',
+            $this->getDatabase()
+        );
     }
 
     public function getRouter()
@@ -79,11 +83,11 @@ class Configurator
 
     public function getPerfilController()
     {
-    return new PerfilController(
-        $this->getRenderer(),
-        new Request(),
-        $this->getPerfilModel()
-    );
+        return new PerfilController(
+            $this->getRenderer(),
+            new Request(),
+            $this->getPerfilModel()
+        );
     }
 
     public function getPartidaController()
@@ -92,7 +96,9 @@ class Configurator
             $this->getRenderer(),
             new Request(),
             $this->getPartidaModel(),
+            $this->getPreguntaModel(),
             $this->getUserModel()
+
         );
     }
 
@@ -124,4 +130,6 @@ class Configurator
             $this->getDatabase()
         );
     }
+
+
 }

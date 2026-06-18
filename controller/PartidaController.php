@@ -5,21 +5,26 @@ class PartidaController
     private $renderer;
     private $request;
     private $partidaModel;
+    private $preguntaModel;
 
     private $userModel;
 
     const PREGUNTAS_POR_PARTIDA = 10;
     const LETRAS = ['A', 'B', 'C', 'D'];
+    // Tiene que coincidir con la duración de la transición CSS en ruleta.mustache
+    const DURACION_RULETA_MS = 3000;
 
     public function __construct(
         $renderer,
         $request,
         $partidaModel,
+        $preguntaModel,
         $userModel
     ) {
         $this->renderer     = $renderer;
         $this->request      = $request;
         $this->partidaModel = $partidaModel;
+        $this->preguntaModel = $preguntaModel;
         $this->userModel = $userModel;
     }
 
@@ -67,18 +72,12 @@ class PartidaController
         $dificultad = $this->partidaModel
             ->dificultadSegunNivel($usuarioId);
 
-        $preguntas = $this->partidaModel
-            ->seleccionarPreguntas(
-                $usuarioId,
-                $dificultad,
-                self::PREGUNTAS_POR_PARTIDA
-            );
+        $categorias = $this->preguntaModel->obtenerCategorias();
 
-
-        if (empty($preguntas)) {
+        if (empty($categorias)) {
             $this->renderer->render(
                 "error",
-                ["mensaje" => "No hay preguntas disponibles en este momento."]
+                ["mensaje" => "No hay categorías disponibles en este momento."]
             );
             return;
         }
@@ -88,15 +87,128 @@ class PartidaController
 
         $_SESSION['partida'] = [
             'id'            => $partidaId,
-            'pregunta_ids'  => array_column($preguntas, 'id'),
+            'dificultad'    => $dificultad,
             'indice_actual' => 0,
             'puntaje'       => 0,
-            'total'         => count($preguntas),
+            'total'         => self::PREGUNTAS_POR_PARTIDA,
         ];
 
-        header("Location: ?controller=partida&method=jugar");
+        header("Location: ?controller=partida&method=ruleta");
         exit();
 
+    }
+
+    // ─────────────────────────────────────────────────────────────────
+    //  ruleta() → gira la ruleta, elige la categoría y la pregunta de la
+    //             ronda actual (todavía no arranca el timer de 15s)
+    // ─────────────────────────────────────────────────────────────────
+    public function ruleta()
+    {
+        $this->verificarLogin();
+
+        if (empty($_SESSION['partida'])) {
+            header("Location: ?controller=partida&method=nueva");
+            exit();
+        }
+
+        $sesion = &$_SESSION['partida'];
+
+        if ($sesion['indice_actual'] >= $sesion['total']) {
+            header("Location: ?controller=partida&method=resultado");
+            exit();
+        }
+
+        $usuarioId = $_SESSION['usuario']['id'];
+
+        $categorias = $this->preguntaModel->obtenerCategorias();
+
+        if (empty($categorias)) {
+            $this->renderer->render(
+                "error",
+                ["mensaje" => "No hay categorías disponibles en este momento."]
+            );
+            return;
+        }
+
+        // El server elige la categoría (nunca el cliente). Si la categoría
+        // elegida no tiene ninguna pregunta aprobada, probamos con otra.
+        $pregunta = null;
+        $categoriaElegida = null;
+        $candidatas = $categorias;
+        $intentos = 0;
+
+        while ($pregunta === null && $intentos < 3 && !empty($candidatas)) {
+            $indiceAzar = array_rand($candidatas);
+            $categoriaElegida = $candidatas[$indiceAzar];
+
+            $pregunta = $this->partidaModel->seleccionarPreguntaDeCategoria(
+                $usuarioId,
+                $categoriaElegida['id'],
+                $sesion['dificultad']
+            );
+
+            if ($pregunta === null) {
+                unset($candidatas[$indiceAzar]);
+            }
+            $intentos++;
+        }
+
+        if ($pregunta === null) {
+            $this->renderer->render(
+                "error",
+                ["mensaje" => "No hay preguntas disponibles en este momento."]
+            );
+            return;
+        }
+
+        // Guardamos la pregunta de la ronda. El timer de 15s arranca recién
+        // cuando se la muestre en jugar(), no durante el giro de la ruleta.
+        $sesion['pregunta_actual_id'] = $pregunta['id'];
+        unset($sesion['pregunta_limite']);
+
+        $this->renderer->render(
+            "ruleta",
+            $this->datosParaRuleta($categorias, $categoriaElegida, $sesion)
+        );
+    }
+
+    /**
+     * Arma el gradiente cónico y el ángulo final de rotación para que la
+     * ruleta visualmente termine apuntando a $categoriaElegida.
+     */
+    private function datosParaRuleta(array $categorias, array $categoriaElegida, array $sesion): array
+    {
+        $n = count($categorias);
+        $anguloPorCategoria = 360 / $n;
+
+        $stops = [];
+        $indiceGanador = 0;
+        foreach ($categorias as $i => $categoria) {
+            $desde = $i * $anguloPorCategoria;
+            $hasta = ($i + 1) * $anguloPorCategoria;
+            $stops[] = "{$categoria['color']} {$desde}deg {$hasta}deg";
+
+            if ($categoria['id'] === $categoriaElegida['id']) {
+                $indiceGanador = $i;
+            }
+        }
+        $gradiente = "conic-gradient(" . implode(', ', $stops) . ")";
+
+        // La flecha apunta hacia arriba (0°). Centramos el giro en la mitad
+        // del segmento ganador y le sumamos vueltas completas solo por estética.
+        $centroSegmento = ($indiceGanador * $anguloPorCategoria) + ($anguloPorCategoria / 2);
+        $vueltasExtra = 5;
+        $rotacionFinal = ($vueltasExtra * 360) - $centroSegmento;
+
+        return [
+            "gradiente_css"             => $gradiente,
+            "rotacion_final"            => $rotacionFinal,
+            "categoria_ganadora_nombre" => $categoriaElegida['nombre'],
+            "categoria_ganadora_color"  => $categoriaElegida['color'],
+            "numero_pregunta"           => $sesion['indice_actual'] + 1,
+            "total_preguntas"           => $sesion['total'],
+            "duracion_ms"               => self::DURACION_RULETA_MS,
+        ];
     }
 
     // ─────────────────────────────────────────────────────────────────
@@ -120,15 +232,20 @@ class PartidaController
             exit();
         }
 
-        $preguntaId   = $sesion['pregunta_ids'][$indice];
+        // Si todavía no se giró la ruleta para esta ronda, hay que girarla primero
+        if (empty($sesion['pregunta_actual_id'])) {
+            header("Location: ?controller=partida&method=ruleta");
+            exit();
+        }
+
+        $preguntaId = $sesion['pregunta_actual_id'];
         $ahora = time();
 
-        if (!isset($_SESSION['partida']['pregunta_actual_id']) || $_SESSION['partida']['pregunta_actual_id'] !== $preguntaId) {
-            $_SESSION['partida']['pregunta_actual_id'] = $preguntaId;
-            $_SESSION['partida']['pregunta_limite']    = $ahora + 15;
+        if (!isset($sesion['pregunta_limite'])) {
+            $sesion['pregunta_limite'] = $ahora + 15;
             $tiempoRestante = 15;
         } else {
-            $limiteOriginal = $_SESSION['partida']['pregunta_limite'];
+            $limiteOriginal = $sesion['pregunta_limite'];
             $tiempoRestante = $limiteOriginal - $ahora;
 
             if ($tiempoRestante <= 0) {
@@ -141,16 +258,17 @@ class PartidaController
             ->obtenerPreguntaPorId($preguntaId);
 
         // La pregunta pudo haber sido rechazada después de seleccionarse:
-        // la salteamos silenciosamente
+        // volvemos a girar la ruleta para esta ronda
         if (!$preguntaFila) {
-            $sesion['indice_actual']++;
-            header("Location: ?controller=partida&method=jugar");
+            unset($sesion['pregunta_actual_id'], $sesion['pregunta_limite']);
+            header("Location: ?controller=partida&method=ruleta");
             exit();
         }
 
         $this->partidaModel->registrarVista($usuarioId, $preguntaId);
 
         $opciones = $this->partidaModel->obtenerOpciones($preguntaId);
+        shuffle($opciones); // el orden en la BD es fijo; lo desordenamos para que la correcta no caiga siempre en la misma letra
         $opciones = $this->agregarLetras($opciones);  // ← A / B / C / D
 
         // Porcentaje para la barra de progreso
@@ -230,8 +348,8 @@ class PartidaController
                 header("Location: ?controller=partida&method=resultado");
                 exit();
             }
-            unset($sesion['pregunta_actual_id']);
-            header("Location: ?controller=partida&method=jugar");
+            unset($sesion['pregunta_actual_id'], $sesion['pregunta_limite']);
+            header("Location: ?controller=partida&method=ruleta");
             exit();
 
         } else {
