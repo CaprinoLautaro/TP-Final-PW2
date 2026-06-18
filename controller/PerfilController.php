@@ -160,4 +160,8 @@ class PerfilController
             'id_jugador'            => $idAjeno,
         ]);
     }
+    public function ver()
+    {
+        $this->verPerfil();
+    }
 }

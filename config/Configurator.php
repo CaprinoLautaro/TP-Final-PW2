@@ -20,13 +20,18 @@ class Configurator
         return new homeController(
             $this->getRenderer(),
             new Request(),
-            $this->getPartidaModel()
+            $this->getPartidaModel(),
+            $this->getRankingModel()
         );
     }
 
     public function getRankingController()
     {
-        return new RankingController($this->getRenderer(), new Request(), $this->getRankingModel());
+        return new RankingController(
+            $this->getRenderer(),
+            new Request(),
+            $this->getRankingModel()
+        );
     }
 
     public function getUserController()
@@ -132,8 +137,11 @@ class Configurator
         );
     }
 
+
+
     private function getRankingModel()
     {
         return new RankingModel($this->getDatabase());
     }
+
 }

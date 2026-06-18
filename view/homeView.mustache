@@ -32,6 +32,14 @@
         <div class="puntaje-badge">
             <div class="num">{{puntaje_total}}</div>
             <div class="label">Puntos totales</div>
+
+            <div class="ranking-pos-badge">
+                {{#medalla_oro}}🥇{{/medalla_oro}}
+                {{#medalla_plata}}🥈{{/medalla_plata}}
+                {{#medalla_bronce}}🥉{{/medalla_bronce}}
+                <span class="pos-num">#{{posicion_ranking}}</span>
+                <span class="pos-label">en el ranking</span>
+            </div>
         </div>
     </div>
 
