@@ -86,7 +86,8 @@ class Configurator
         return new PerfilController(
             $this->getRenderer(),
             new Request(),
-            $this->getPerfilModel()
+            $this->getPerfilModel(),
+            $this->getPartidaModel()
         );
     }
 

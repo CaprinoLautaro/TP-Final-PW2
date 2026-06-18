@@ -19,10 +19,6 @@ class PartidaModel
         return $this->database->lastInsertId();
     }
 
-    /**
-     * Devuelve la dificultad de preguntas que le corresponde al usuario
-     * según su nivel acumulado: Malo → facil, Bueno → media, Capo → dificil.
-     */
     public function dificultadSegunNivel($usuarioId)
     {
         $resultado = $this->database->query(
@@ -38,13 +34,12 @@ class PartidaModel
             case 'bueno':
                 return 'media';
             default:
-                return 'facil';   // malo o null
+                return 'facil';  
         }
     }
 
     public function seleccionarPreguntas($usuarioId, $dificultad, $cantidad = 10)
     {
-        // Primer intento: preguntas del nivel exacto no vistas aún
         $preguntas = $this->database->query(
             "SELECT
                 p.id,
@@ -69,7 +64,6 @@ class PartidaModel
             [$dificultad, $usuarioId, $cantidad]
         );
 
-        // Segundo intento: completar con cualquier dificultad no vista
         if (count($preguntas) < $cantidad) {
             $idsYa = array_column($preguntas, 'id');
             $faltan = $cantidad - count($preguntas);
@@ -102,7 +96,6 @@ class PartidaModel
             $preguntas = array_merge($preguntas, $complemento);
         }
 
-        // Último recurso: preguntas ya vistas (no quedan nuevas)
         if (count($preguntas) < $cantidad) {
             $idsYa = array_column($preguntas, 'id');
             $faltan = $cantidad - count($preguntas);
@@ -133,19 +126,8 @@ class PartidaModel
         return $preguntas;
     }
 
-    /**
-     * Selecciona UNA pregunta dentro de la categoría que salió en la ruleta.
-     * Mismo esquema de fallback en 3 niveles que seleccionarPreguntas(), pero
-     * acotado siempre a la categoría ganadora (para no romper la promesa visual
-     * de la ruleta).
-     *
-     * Depende de que registrarVista() ya haya marcado como vistas las preguntas
-     * anteriores de la partida (eso es lo que evita repeticiones dentro del
-     * mismo juego, igual que pasaba antes con el NOT IN de preguntas_vistas).
-     */
     public function seleccionarPreguntaDeCategoria($usuarioId, $categoriaId, $dificultad)
     {
-        // 1) Categoría + dificultad exacta, no vista
         $preguntas = $this->database->query(
             "SELECT
                 p.id, p.enunciado, p.dificultad, p.veces_vista, p.veces_correcta,
@@ -167,7 +149,6 @@ class PartidaModel
             [$categoriaId, $dificultad, $usuarioId]
         );
 
-        // 2) Misma categoría, cualquier dificultad, no vista
         if (empty($preguntas)) {
             $preguntas = $this->database->query(
                 "SELECT
@@ -190,9 +171,6 @@ class PartidaModel
             );
         }
 
-        // 3) Último recurso: misma categoría aunque ya esté vista
-        //    (preferimos repetir una pregunta antes que mostrar una categoría
-        //    distinta a la que salió en la ruleta)
         if (empty($preguntas)) {
             $preguntas = $this->database->query(
                 "SELECT
@@ -281,13 +259,6 @@ class PartidaModel
         );
     }
 
-    /**
-     * Calcula cuántos puntos se restan al perder según en qué pregunta ocurrió.
-     *   Pregunta 1 perdida  (pasadas=0) → -3
-     *   Pregunta 2 perdida  (pasadas=1) → -2
-     *   Pregunta 3+ perdida             → -1
-     *   Victoria            (null)      →  0
-     */
     public function calcularPenalizacion($preguntasPasadas)
     {
         if ($preguntasPasadas === null) return 0;
@@ -308,7 +279,6 @@ class PartidaModel
 
         $puntaje = (int)($resultado[0]['puntaje'] ?? 0);
 
-        // Sumar puntos ganados en la partida
         if ($puntaje > 0) {
             $this->database->execute(
                 "UPDATE usuarios
@@ -318,7 +288,6 @@ class PartidaModel
             );
         }
 
-        // Restar penalización si perdió (nunca baja de 0)
         $penalizacion = $this->calcularPenalizacion($preguntasPasadas);
         if ($penalizacion > 0) {
             $this->database->execute(
@@ -338,15 +307,6 @@ class PartidaModel
         return (int)($resultado[0]['puntaje'] ?? 0);
     }
 
-    /**
-     * Trae las últimas $cantidad partidas terminadas del usuario, para
-     * mostrar en el listado "Mis partidas" del home.
-     *
-     * No hay un campo "gano/perdio" en la tabla: se infiere de puntaje.
-     * Como cada pregunta correcta suma 1 y un solo error termina la
-     * partida, la única forma de llegar a $totalPreguntas puntos es
-     * habiendo respondido bien las 10 (ganó la partida completa).
-     */
     public function obtenerUltimasPartidas($usuarioId, $cantidad = 3, $totalPreguntas = 10)
     {
         $filas = $this->database->query(

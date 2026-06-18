@@ -1,5 +1,4 @@
 <?php
-
 class PerfilModel
 {
     private $database;
@@ -28,6 +27,26 @@ class PerfilModel
 
         return $resultado[0] ?? null;
     }
+
+    public function buscarPerfilPublico($id)
+    {
+        $resultado = $this->database->query(
+            "SELECT nombre_completo,
+                    nombre_usuario,
+                    ciudad,
+                    foto_perfil,
+                    latitud,
+                    longitud,
+                    puntaje_total,
+                    nivel
+             FROM usuarios
+             WHERE id = ?",
+            [$id]
+        );
+
+        return $resultado[0] ?? null;
+    }
+
     public function actualizarUsuario($id, $nombre, $ciudad, $sexo, $anio, $latitud, $longitud) {
         $sql = "UPDATE usuarios 
             SET nombre_completo = ?, 

@@ -5,15 +5,18 @@ class PerfilController
     private $renderer;
     private $request;
     private $perfilModel;
+    private $partidaModel;
 
     public function __construct(
         $renderer,
         $request,
-        $perfilModel
+        $perfilModel,
+        $partidaModel
     ) {
-        $this->renderer    = $renderer;
-        $this->request     = $request;
-        $this->perfilModel = $perfilModel;
+        $this->renderer     = $renderer;
+        $this->request      = $request;
+        $this->perfilModel  = $perfilModel;
+        $this->partidaModel = $partidaModel;
     }
 
     public function index()
@@ -49,15 +52,13 @@ class PerfilController
             'modo_lectura'    => true
         ]);
     }
+
     public function editarPerfil(){
 
         if (session_status() === PHP_SESSION_NONE) {
             session_start();
         }
 
-        if(session_status() === PHP_SESSION_NONE){
-            session_start();
-        }
         if(empty($_SESSION['usuario'])){
             header("Location: ?controller=login&method=index");
             exit();
@@ -81,6 +82,7 @@ class PerfilController
             'modo_edicion'    => true
         ]);
     }
+
     public function procesarEdicion()
     {
         if (session_status() === PHP_SESSION_NONE) {
@@ -111,5 +113,51 @@ class PerfilController
             header("Location: ?controller=perfil&method=index");
             exit();
         }
+    }
+
+    public function verPerfil()
+    {
+        if (session_status() === PHP_SESSION_NONE) {
+            session_start();
+        }
+
+        if (empty($_SESSION['usuario'])) {
+            header("Location: ?controller=login&method=index");
+            exit();
+        }
+
+        $idAjeno = (int) ($_GET['id'] ?? 0);
+
+        if (!$idAjeno) {
+            header("Location: ?controller=ranking&method=index");
+            exit();
+        }
+
+        if ($idAjeno === (int) $_SESSION['usuario']['id']) {
+            header("Location: ?controller=perfil&method=index");
+            exit();
+        }
+
+        $usuario = $this->perfilModel->buscarPerfilPublico($idAjeno);
+
+        if (!$usuario) {
+            die("Usuario no encontrado.");
+        }
+
+        $partidas = $this->partidaModel->obtenerUltimasPartidas($idAjeno, 3);
+
+        $this->renderer->render('perfilAjenoView', [
+            'nombre_completo'       => $usuario['nombre_completo'],
+            'nombre_usuario_jugador'=> $usuario['nombre_usuario'],
+            'ciudad'                => $usuario['ciudad'],
+            'foto_perfil_jugador'   => $usuario['foto_perfil'],
+            'inicial_jugador'       => strtoupper($usuario['nombre_usuario'][0]),
+            'latitud'               => $usuario['latitud'],
+            'longitud'              => $usuario['longitud'],
+            'puntaje_total_jugador' => $usuario['puntaje_total'],
+            'nivel_jugador'         => $usuario['nivel'],
+            'partidas'              => $partidas,
+            'id_jugador'            => $idAjeno,
+        ]);
     }
 }

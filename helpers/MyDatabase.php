@@ -10,10 +10,9 @@ class MyDatabase
             $hostname,
             $username,
             $password,
-            $database
+            $database,
         );
 
-        // ← AGREGÁ ESTO
         $this->conexion->set_charset("utf8mb4");
     }
 

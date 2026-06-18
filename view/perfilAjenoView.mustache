@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Preguntados - Perfil de {{nombre_usuario_jugador}}</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="./public/css/perfilView.css">
+    <link rel="stylesheet" href="./public/css/homeView.css">
+</head>
+
+<body>
+
+{{> header}}
+
+<main>
+
+    <div class="perfil-hero">
+
+        <div class="avatar-circle">
+            {{#foto_perfil_jugador}}
+                <img src="{{foto_perfil_jugador}}" alt="Foto de perfil de {{nombre_usuario_jugador}}">
+            {{/foto_perfil_jugador}}
+            {{^foto_perfil_jugador}}
+                {{inicial_jugador}}
+            {{/foto_perfil_jugador}}
+        </div>
+
+        <div>
+            <div class="perfil-nombre">{{nombre_completo}}</div>
+            <div class="perfil-username">@{{nombre_usuario_jugador}}</div>
+        </div>
+
+    </div>
+
+    <div class="perfil-grid">
+
+        <div class="perfil-campo">
+            <span class="label">Puntaje total</span>
+            <span class="valor">{{puntaje_total_jugador}} pts</span>
+        </div>
+
+        <div class="perfil-campo">
+            <span class="label">Nivel</span>
+            <span class="valor">{{nivel_jugador}}</span>
+        </div>
+
+        <div class="perfil-campo">
+            <span class="label">Ciudad</span>
+            <span class="valor">{{ciudad}}</span>
+        </div>
+
+    </div>
+
+    <div class="perfil-mapa-seccion">
+        <div class="section-title">Ubicación</div>
+        <div class="map-container">
+            <div id="map" style="width: 100%; height: 300px; border-radius: 8px;"></div>
+        </div>
+
+        <p class="perfil-coords">
+            📍 {{ciudad}} — {{latitud}}, {{longitud}}
+        </p>
+    </div>
+
+    <div class="section-title">Partidas realizadas</div>
+
+    <div class="partidas-list">
+
+        {{#partidas}}
+            <div class="partida-card {{resultado}}">
+                <div class="partida-info">
+                    <div class="fecha">{{fecha}}</div>
+                    <div class="detalle">{{detalle}}</div>
+                </div>
+
+                <div class="partida-resultado">
+                    <div class="ptos {{resultado}}">
+                        {{puntaje}}
+                    </div>
+                    <div class="sub">puntos</div>
+                </div>
+            </div>
+        {{/partidas}}
+
+        {{^partidas}}
+            <div class="empty">
+                <strong>{{nombre_usuario_jugador}} todavía no jugó ninguna partida</strong>
+            </div>
+        {{/partidas}}
+
+    </div>
+
+    <!-- Acá va el QR para entrar directo a este perfil:
+         ?controller=perfil&method=verPerfil&id={{id_jugador}} -->
+
+    <div class="perfil-actions">
+        <a href="?controller=ranking&method=index" class="btn-main btn-volver">
+            ← Volver al ranking
+        </a>
+    </div>
+
+</main>
+
+<script>
+    function initMap() {
+        const pos = {
+            lat: parseFloat("{{latitud}}") || -34.5975446,
+            lng: parseFloat("{{longitud}}") || -58.4085508
+        };
+
+        const map = new google.maps.Map(
+            document.getElementById("map"),
+            {
+                zoom: 14,
+                center: pos
+            }
+        );
+
+        new google.maps.Marker({
+            position: pos,
+            map: map,
+            draggable: false
+        });
+    }
+</script>
+
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBk9DLeup0-V7pz5-ua52YI8qz_Sk6yC94&callback=initMap" async defer></script>
+
+{{> footer}}
+
+</body>
+</html>

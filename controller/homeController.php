@@ -25,8 +25,6 @@ class HomeController
 
         $usuarioId = $_SESSION['usuario']['id'] ?? null;
 
-        // Si por algún motivo no hay usuario en sesión, mostramos el home
-        // igual pero sin historial (en vez de romper la página).
         $partidas = $usuarioId
             ? $this->partidaModel->obtenerUltimasPartidas($usuarioId, 3)
             : [];

@@ -45,6 +45,7 @@ class PreguntaModel
         $esCorrecta,
         $orden
     )
+
     {
         $this->database->execute(
             "INSERT INTO opciones (

@@ -16,3 +16,9 @@ TOKEN: 84a1ec93ac8be2a274e697be289df3dc85a6d048b224b45277bdc229010f5246
 EMAIL: cl4utar0@gmail.com
 TOKEN: 684715
 ------------------
+EMAIL: sofia.mercado1606@gmail.com
+TOKEN: 38fe8f
+------------------
+EMAIL: maca.rodriguez1310@gmail.com
+TOKEN: ad5638
+------------------
