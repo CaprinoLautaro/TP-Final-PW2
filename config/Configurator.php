@@ -26,7 +26,7 @@ class Configurator
 
     public function getRankingController()
     {
-        return new RankingController($this->getRenderer(), new Request());
+        return new RankingController($this->getRenderer(), new Request(), $this->getRankingModel());
     }
 
     public function getUserController()
@@ -132,5 +132,8 @@ class Configurator
         );
     }
 
-
+    private function getRankingModel()
+    {
+        return new RankingModel($this->getDatabase());
+    }
 }
