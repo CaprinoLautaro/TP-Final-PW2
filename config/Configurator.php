@@ -144,4 +144,19 @@ class Configurator
         return new RankingModel($this->getDatabase());
     }
 
+    public function getCategoriaController()
+    {
+        return new CategoriaController(
+            $this->getRenderer(),
+            new Request(),
+            $this->getCategoriaModel()
+        );
+    }
+
+    private function getCategoriaModel()
+    {
+        return new CategoriaModel($this->getDatabase());
+    }
+
+
 }
