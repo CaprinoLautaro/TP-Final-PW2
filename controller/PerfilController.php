@@ -7,12 +7,7 @@ class PerfilController
     private $perfilModel;
     private $partidaModel;
 
-    public function __construct(
-        $renderer,
-        $request,
-        $perfilModel,
-        $partidaModel
-    ) {
+    public function __construct($renderer, $request, $perfilModel, $partidaModel) {
         $this->renderer     = $renderer;
         $this->request      = $request;
         $this->perfilModel  = $perfilModel;
@@ -30,8 +25,7 @@ class PerfilController
             exit();
         }
 
-        $id = $_SESSION['usuario']['id'];
-
+        $id      = $_SESSION['usuario']['id'];
         $usuario = $this->perfilModel->buscarPorId($id);
 
         if (!$usuario) {
@@ -63,11 +57,13 @@ class PerfilController
             header("Location: ?controller=login&method=index");
             exit();
         }
-        $id = $_SESSION['usuario']['id'];
+        $id      = $_SESSION['usuario']['id'];
         $usuario = $this->perfilModel->buscarPorId($id);
+
         if (!$usuario) {
             die("Usuario no encontrado.");
         }
+
         $this->renderer->render('perfilView', [
             'nombre_completo' => $usuario['nombre_completo'],
             'nombre_usuario'  => $usuario['nombre_usuario'],
@@ -96,8 +92,7 @@ class PerfilController
 
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
-            $id = $_SESSION['usuario']['id'];
-
+            $id       = $_SESSION['usuario']['id'];
             $nombre   = $_POST['nombre_completo'];
             $ciudad   = $_POST['ciudad'];
             $sexo     = $_POST['sexo'];
@@ -146,6 +141,8 @@ class PerfilController
 
         $partidas = $this->partidaModel->obtenerUltimasPartidas($idAjeno, 3);
 
+         $qr = GenerarQR::generador();
+
         $this->renderer->render('perfilAjenoView', [
             'nombre_completo'       => $usuario['nombre_completo'],
             'nombre_usuario_jugador'=> $usuario['nombre_usuario'],
@@ -158,6 +155,7 @@ class PerfilController
             'nivel_jugador'         => $usuario['nivel'],
             'partidas'              => $partidas,
             'id_jugador'            => $idAjeno,
+            'qr'                    => $qr,
         ]);
     }
     public function ver()
