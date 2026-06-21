@@ -90,7 +90,7 @@ main {
 
 .actions-secundarias {
     display: grid;
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: 1fr 1fr 1fr;
     gap: 1rem;
 }
 
@@ -135,6 +135,7 @@ main {
     color: var(--text);
     border: 2px solid var(--muted);
 }
+
 
 /* ── SECCIÓN PARTIDAS ── */
 .section-title {
@@ -322,4 +323,9 @@ main {
     opacity: 0.75;
     align-self: flex-end;
     padding-bottom: 2px;
+}
+.btn-cat{
+    background: var(--card);
+    color: var(--text);
+    border: 2px solid var(--muted);
 }
