@@ -32,6 +32,8 @@ class PerfilController
             die("Usuario no encontrado.");
         }
 
+        $qr = GenerarQR::generador($id);
+
         $this->renderer->render('perfilView', [
             'nombre_completo' => $usuario['nombre_completo'],
             'nombre_usuario'  => $usuario['nombre_usuario'],
@@ -43,7 +45,8 @@ class PerfilController
             'anio_nacimiento' => $usuario['anio_nacimiento'],
             'latitud'         => $usuario['latitud'],
             'longitud'        => $usuario['longitud'],
-            'modo_lectura'    => true
+            'modo_lectura'    => true,
+            'qr'              => $qr
         ]);
     }
 
@@ -155,7 +158,7 @@ class PerfilController
             'nivel_jugador'         => $usuario['nivel'],
             'partidas'              => $partidas,
             'id_jugador'            => $idAjeno,
-            'qr'                    => $qr,
+            'qr'                    => $qr
         ]);
     }
     public function ver()
