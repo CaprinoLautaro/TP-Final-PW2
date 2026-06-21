@@ -92,8 +92,13 @@
 
     </div>
 
-    <!-- Acá va el QR para entrar directo a este perfil:
-         ?controller=perfil&method=verPerfil&id={{id_jugador}} -->
+    <div class="qr-container">
+        <span class="qr-title">CÓDIGO QR</span>
+        <p class="qr-description">Escaneá para ver este perfil</p>
+        <div class="qr-card">
+            <img src="{{qr}}" alt="Código QR del Perfil">
+        </div>
+    </div>
 
     <div class="perfil-actions">
         <a href="?controller=ranking&method=index" class="btn-main btn-volver">
