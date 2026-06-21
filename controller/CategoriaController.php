@@ -14,8 +14,22 @@ class CategoriaController
         $this->categoriaModel = $categoriaModel;
     }
 
+    private function verificarLogin()
+    {
+        if (session_status() === PHP_SESSION_NONE) {
+            session_start();
+        }
+
+        if (empty($_SESSION['usuario'])) {
+            header("Location: ?controller=login&method=index");
+            exit();
+        }
+    }
+
     public function index()
     {
+        $this->verificarLogin();
+
         $categorias = $this->categoriaModel->obtenerCategorias();
         $this->renderer->render('categoriasView', [
             'categorias' => $categorias
@@ -24,6 +38,8 @@ class CategoriaController
 
     public function crear()
     {
+        $this->verificarLogin();
+
         $this->renderer->render('categoriaFormView', [
             'titulo' => 'Nueva categoría',
             'accion' => '?controller=categoria&method=guardar',
@@ -33,6 +49,8 @@ class CategoriaController
 
     public function guardar()
     {
+        $this->verificarLogin();
+
         $nombre = trim($_POST['nombre']);
         $color = $_POST['color'];
 
@@ -44,6 +62,8 @@ class CategoriaController
 
     public function editar()
     {
+        $this->verificarLogin();
+
         $id = (int)$_GET['id'];
         $categoria = $this->categoriaModel->obtenerCategoriaPorId($id);
         $this->renderer->render('categoriaFormView', [
@@ -56,6 +76,8 @@ class CategoriaController
 
     public function actualizar()
     {
+        $this->verificarLogin();
+
         $id = (int)$_POST['id'];
         $nombre = trim($_POST['nombre']);
         $color = $_POST['color'];
@@ -67,6 +89,8 @@ class CategoriaController
 
     public function cambiarEstado()
     {
+        $this->verificarLogin();
+
         $id = (int)$_POST['id'];
         $estado = (int)$_POST['estado'];
 
@@ -78,6 +102,8 @@ class CategoriaController
 
     public function toggle()
     {
+        $this->verificarLogin();
+
         $id = (int)$_GET['id'];
 
         $this->categoriaModel->cambiarEstadoCategoria($id);
