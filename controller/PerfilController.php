@@ -141,7 +141,7 @@ class PerfilController
 
         $partidas = $this->partidaModel->obtenerUltimasPartidas($idAjeno, 3);
 
-         $qr = GenerarQR::generador();
+         $qr = GenerarQR::generador($idAjeno);
 
         $this->renderer->render('perfilAjenoView', [
             'nombre_completo'       => $usuario['nombre_completo'],
