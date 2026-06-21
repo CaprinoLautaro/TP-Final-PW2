@@ -9,7 +9,7 @@ class GenerarQR
             mkdir($dir, 0777, true);
 
         $rutaQR = $dir . uniqid() . '.png';
-        $url = 'controller=perfil&method=verPerfil&id=' . $id;
+        $url = 'https://elpreguntadosargento.freepage.cc/?controller=perfil&method=verPerfil&id=' . $id;
 
         QRcode::png($url, $rutaQR, 'M', 8, 2);
 
