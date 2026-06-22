@@ -75,7 +75,11 @@
                 🏷️ Categorías
             </a>
         </div>
-
+        {{#esAdmin}}
+            <div>
+                <a href="?controller=admin&method=index" class="btn-main btn-panel">📊 Panel de Administracion y Reportes</a>
+            </div>
+        {{/esAdmin}}
         <!-- Fila inferior: Nueva partida -->
         <a href="?controller=partida&method=nueva" class="btn-main btn-jugar">
             ▶ Nueva partida

@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Preguntados - Panel de Administración</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="./public/css/panelAdmin.css">
+</head>
+
+<body>
+
+{{> header}}
+
+<main class="admin-main">
+
+    <div class="admin-header-bar">
+        <h1 class="admin-title">PANEL DE CONTROL</h1>
+        <div class="admin-botones no-print">
+            <a href="index.php?controller=home&method=index" class="btn-main btn-volver" style="max-width: 150px;">◄ Volver</a>
+            <button onclick="window.print()" class="btn-main btn-imprimir" style="max-width: 150px; border: none;">🖨️ Imprimir</button>
+        </div>
+    </div>
+
+    <div class="filtros-container no-print">
+        <span class="filtros-titulo">Período:</span>
+        <div class="filtros-links">
+            <a href="index.php?controller=admin&method=index&filtro=dia">Hoy</a>
+            <a href="index.php?controller=admin&method=index&filtro=semana">Esta Semana</a>
+            <a href="index.php?controller=admin&method=index&filtro=mes">Este Mes</a>
+            <a href="index.php?controller=admin&method=index&filtro=anio">Este Año</a>
+        </div>
+    </div>
+
+    <div class="kpi-grid">
+        <div class="kpi-card">
+            <h3>👥 Jugadores Totales</h3>
+            <p class="valor">{{total_jugadores}}</p>
+        </div>
+        <div class="kpi-card">
+            <h3>🆕 Usuarios Nuevos</h3>
+            <p class="valor">{{total_nuevos}}</p>
+        </div>
+        <div class="kpi-card">
+            <h3>🎮 Partidas Jugadas</h3>
+            <p class="valor">{{total_partidas}}</p>
+        </div>
+        <div class="kpi-card">
+            <h3>✅ Preguntas en Juego</h3>
+            <p class="valor">{{preguntas_juego}}</p>
+        </div>
+        <div class="kpi-card kpi-card-full">
+            <h3>📝 Preguntas Creadas</h3>
+            <p class="valor">{{preguntas_creadas}}</p>
+        </div>
+    </div>
+    <div class="reporte-section">
+        <h2 class="section-title">Distribución por País</h2>
+        <table class="tabla-admin">
+            <thead>
+            <tr>
+                <th>País</th>
+                <th>Cantidad de Usuarios</th>
+                <th>Porcentaje</th>
+            </tr>
+            </thead>
+            <tbody>
+            {{#usuarios_pais}}
+                <tr>
+                    <td>{{pais}}</td>
+                    <td>{{cantidad}}</td>
+                    <td class="destaque-porcentaje">{{porcentaje}}%</td>
+                </tr>
+            {{/usuarios_pais}}
+            </tbody>
+        </table>
+    </div>
+
+    <div class="reporte-section">
+        <h2 class="section-title">Rendimiento de Jugadores</h2>
+        <table class="tabla-admin">
+            <thead>
+            <tr>
+                <th>Usuario</th>
+                <th>Partidas Jugadas</th>
+                <th>% de Aciertos</th>
+            </tr>
+            </thead>
+            <tbody>
+            {{#rendimiento_usuarios}}
+                <tr>
+                    <td>{{username}}</td>
+                    <td>{{partidas}}</td>
+                    <td class="destaque-aciertos">{{porcentaje_aciertos}}%</td>
+                </tr>
+            {{/rendimiento_usuarios}}
+            </tbody>
+        </table>
+    </div>
+
+</main>
+
+{{> footer}}
+
+</body>
+</html>

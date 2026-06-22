@@ -25,6 +25,8 @@ class HomeController
 
         $usuarioId = $_SESSION['usuario']['id'] ?? null;
 
+        $usuarioRol = $_SESSION['usuario']['rol_id'] ?? null;
+
         $partidas = $usuarioId
             ? $this->partidaModel->obtenerUltimasPartidas($usuarioId, 3)
             : [];
@@ -49,6 +51,8 @@ class HomeController
                 'medalla_oro'      => $posicion === 1,
                 'medalla_plata'    => $posicion === 2,
                 'medalla_bronce'   => $posicion === 3,
+
+                'esAdmin'          => ((int)$usuarioRol === 3)
             ]
         );
     }

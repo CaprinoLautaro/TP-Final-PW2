@@ -329,3 +329,8 @@ main {
     color: var(--text);
     border: 2px solid var(--muted);
 }
+.btn-panel{
+    background: var(--card);
+    color: var(--text);
+    border: 2px solid var(--muted);
+}

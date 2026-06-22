@@ -25,6 +25,12 @@ class Configurator
         );
     }
 
+    public function getAdminController() {
+        $database = $this->getDatabase();
+        $adminModel = new AdminModel($database);
+        return new AdminController($adminModel, $this->getRenderer());
+    }
+
     public function getRankingController()
     {
         return new RankingController(
