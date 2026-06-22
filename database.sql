@@ -591,4 +591,30 @@ INSERT INTO opciones (pregunta_id, texto, es_correcta, orden) VALUES
                                                                   (LAST_INSERT_ID(), 'Le Corbusier',      0, 2),
                                                                   (LAST_INSERT_ID(), 'Frank Lloyd Wright',0, 3),
                                                                   (LAST_INSERT_ID(), 'Renzo Piano',       0, 4);
+INSERT INTO usuarios (
+    nombre_completo,
+    anio_nacimiento,
+    sexo,
+    pais_id,
+    ciudad,
+    email,
+    contrasenia,
+    nombre_usuario,
+    rol_id,
+    activo,
+    nivel
+) VALUES (
+             'Admin General',                                              -- nombre_completo
+             1995,                                                         -- anio_nacimiento
+             'Prefiero no cargarlo',                                       -- sexo
+             1,                                                            -- pais_id (verificá que exista ese id en `paises`)
+             'Buenos Aires',                                               -- ciudad
+             'admin@preguntados.com',                                      -- email (tiene que ser único)
+             '$2b$10$kFiGEZ6d3Cz3VPa0wFBb2eD8Seb290cS/UNWKV42zVBG9r6anl2vG', -- contrasenia = "Admin123!"
+             'admin',                                                      -- nombre_usuario (único)
+             3,                                                            -- rol_id = 3 -> administrador
+             1,                                                            -- activo = 1 (para no tener que validar por mail)
+             'Capo'                                                        -- nivel
+         );
+
 SET FOREIGN_KEY_CHECKS = 1;
