@@ -70,13 +70,12 @@
             <a href="?controller=pregunta&method=crear" class="btn-main btn-crear">
                 ✏️ Crear pregunta
             </a>
-
-            <a href="?controller=categoria&method=index" class="btn-main btn-cat">
-                🏷️ Categorías
-            </a>
         </div>
         {{#esAdmin}}
-            <div>
+            <div class="actions-secundarias-admin">
+                <a href="?controller=categoria&method=index" class="btn-main btn-cat">
+                    🏷️ Categorías
+                </a>
                 <a href="?controller=admin&method=index" class="btn-main btn-panel">📊 Panel de Administracion y Reportes</a>
             </div>
         {{/esAdmin}}
