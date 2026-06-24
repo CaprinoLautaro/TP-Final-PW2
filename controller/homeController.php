@@ -52,7 +52,9 @@ class HomeController
                 'medalla_plata'    => $posicion === 2,
                 'medalla_bronce'   => $posicion === 3,
 
-                'esAdmin'          => ((int)$usuarioRol === 3)
+                'esAdmin'          => ((int)$usuarioRol === 3),
+                'esEditor'         => ((int)$usuarioRol === 2),
+                'esAdminOEditor'   => in_array((int)$usuarioRol, [2, 3])
             ]
         );
     }

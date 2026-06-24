@@ -27,8 +27,9 @@ class PreguntaModel
             "INSERT INTO preguntas (
             enunciado,
             categoria_id,
-            creado_por
-        ) VALUES (?, ?, ?)",
+            creado_por,
+            estado
+        ) VALUES (?, ?, ?, 'pendiente')",
             [
                 $enunciado,
                 $categoriaId,
@@ -60,6 +61,45 @@ class PreguntaModel
                 $esCorrecta,
                 $orden
             ]
+        );
+    }
+
+    public function obtenerPreguntasPendientes()
+    {
+        return $this->database->query(
+            "SELECT
+            p.id,
+            p.enunciado,
+            c.nombre AS categoria
+         FROM preguntas p
+         INNER JOIN categorias c
+             ON p.categoria_id = c.id
+         WHERE p.estado = 'pendiente'
+         ORDER BY p.creado_en DESC"
+        );
+    }
+
+    public function aprobarPregunta($preguntaId, $editorId)
+    {
+        $this->database->execute(
+            "UPDATE preguntas
+         SET estado = 'aprobada',
+             aprobada_por = ?
+         WHERE id = ?",
+            [
+                $editorId,
+                $preguntaId
+            ]
+        );
+    }
+
+    public function rechazarPregunta($preguntaId)
+    {
+        $this->database->execute(
+            "UPDATE preguntas
+         SET estado = 'rechazada'
+         WHERE id = ?",
+            [$preguntaId]
         );
     }
 }

@@ -71,14 +71,28 @@
                 ✏️ Crear pregunta
             </a>
         </div>
-        {{#esAdmin}}
+
+        {{#esAdminOEditor}}
             <div class="actions-secundarias-admin">
+
                 <a href="?controller=categoria&method=index" class="btn-main btn-cat">
                     🏷️ Categorías
                 </a>
-                <a href="?controller=admin&method=index" class="btn-main btn-panel">📊 Panel de Administracion y Reportes</a>
+
+                <a href="?controller=habilitarPregunta&method=index" class="btn-main btn-cat">
+                    ✅ Revisar preguntas
+                </a>
+
             </div>
+        {{/esAdminOEditor}}
+
+        {{#esAdmin}}
+            <a href="?controller=admin&method=index"
+               class="btn-main btn-panel">
+                📊 Panel de Administración y Reportes
+            </a>
         {{/esAdmin}}
+
         <!-- Fila inferior: Nueva partida -->
         <a href="?controller=partida&method=nueva" class="btn-main btn-jugar">
             ▶ Nueva partida

@@ -5,6 +5,7 @@
     --text:    #eaeaea;
     --muted:   #7a7a9a;
     --radius:  14px;
+    --surface: #1a1a2e;
 }
 
 *, *::before, *::after {

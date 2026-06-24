@@ -164,5 +164,13 @@ class Configurator
         return new CategoriaModel($this->getDatabase());
     }
 
+    public function getHabilitarPreguntaController()
+    {
+        return new HabilitarPreguntaController(
+            $this->getRenderer(),
+            $this->getPreguntaModel()
+        );
+    }
+
 
 }

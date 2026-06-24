@@ -617,4 +617,30 @@ INSERT INTO usuarios (
              'Capo'                                                        -- nivel
          );
 
+INSERT INTO usuarios (
+    nombre_completo,
+    anio_nacimiento,
+    sexo,
+    pais_id,
+    ciudad,
+    email,
+    contrasenia,
+    nombre_usuario,
+    rol_id,
+    activo,
+    nivel
+) VALUES (
+             'Editor general',
+             1995,                                                         -
+             'Prefiero no cargarlo',
+             1,
+             'Buenos Aires',
+             'editor@preguntados.com',
+             '$2b$10$kFiGEZ6d3Cz3VPa0wFBb2eD8Seb290cS/UNWKV42zVBG9r6anl2vG', -- contrasenia = "Admin123!"
+             'editor',
+             2,
+             1,
+             'Capo'
+         );
+
 SET FOREIGN_KEY_CHECKS = 1;

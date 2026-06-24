@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Preguntados - Revisar preguntas</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="./public/css/habilitarPreguntaView.css">
+</head>
+
+<body>
+
+{{> header}}
+
+<main>
+
+    <div class="welcome-card">
+        <h1>
+            <span>Moderación</span>
+            Revisar preguntas
+        </h1>
+    </div>
+
+    <div class="section-title">
+        Preguntas pendientes de aprobación
+    </div>
+
+    <div class="partidas-list">
+
+        {{#preguntas}}
+            <div class="partida-card">
+
+                <div class="partida-info">
+                    <div class="detalle">
+                        {{enunciado}}
+                    </div>
+
+                    <div class="fecha">
+                        Categoría: {{categoria}}
+                    </div>
+                </div>
+
+                <div class="partida-resultado">
+
+                    <a
+                            href="?controller=habilitarPregunta&method=aprobar&id={{id}}"
+                    class="btn-aprobar">
+                    ✅ Aprobar
+                    </a>
+
+                    <a
+                            href="?controller=habilitarPregunta&method=rechazar&id={{id}}"
+                    class="btn-rechazar">
+                    ❌ Rechazar
+                    </a>
+
+                </div>
+
+            </div>
+        {{/preguntas}}
+
+        {{^preguntas}}
+            <div class="empty">
+                <strong>No hay preguntas pendientes</strong>
+                <p>Todas las preguntas ya fueron revisadas.</p>
+            </div>
+        {{/preguntas}}
+
+    </div>
+
+    <div class="actions">
+        <a href="?controller=home&method=index" class="btn-main btn-ranking">
+            ⬅ Volver al inicio
+        </a>
+    </div>
+
+</main>
+
+{{> footer}}
+
+</body>
+</html>
