@@ -6,7 +6,6 @@
     <title>Preguntados - Revisar preguntas</title>
 
     <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
-
     <link rel="stylesheet" href="./public/css/habilitarPreguntaView.css">
 </head>
 
@@ -23,6 +22,7 @@
         </h1>
     </div>
 
+    <!-- ── PENDIENTES DE APROBACIÓN ── -->
     <div class="section-title">
         Preguntas pendientes de aprobación
     </div>
@@ -33,29 +33,19 @@
             <div class="partida-card">
 
                 <div class="partida-info">
-                    <div class="detalle">
-                        {{enunciado}}
-                    </div>
-
-                    <div class="fecha">
-                        Categoría: {{categoria}}
-                    </div>
+                    <div class="detalle">{{enunciado}}</div>
+                    <div class="fecha">Categoría: {{categoria}}</div>
                 </div>
 
                 <div class="partida-resultado">
-
-                    <a
-                            href="?controller=habilitarPregunta&method=aprobar&id={{id}}"
-                    class="btn-aprobar">
-                    ✅ Aprobar
+                    <a href="?controller=habilitarPregunta&method=aprobar&id={{id}}"
+                       class="btn-aprobar">
+                        ✅ Aprobar
                     </a>
-
-                    <a
-                            href="?controller=habilitarPregunta&method=rechazar&id={{id}}"
-                    class="btn-rechazar">
-                    ❌ Rechazar
+                    <a href="?controller=habilitarPregunta&method=rechazar&id={{id}}"
+                       class="btn-rechazar">
+                        ❌ Rechazar
                     </a>
-
                 </div>
 
             </div>
@@ -70,8 +60,52 @@
 
     </div>
 
+    <!-- ── REPORTADAS POR USUARIOS ── -->
+    <div class="section-title" style="margin-top: 2rem;">
+        Preguntas reportadas por usuarios
+    </div>
+
+    <div class="partidas-list">
+
+        {{#preguntas_reportadas}}
+            <div class="partida-card reportada">
+
+                <div class="partida-info">
+                    <div class="detalle">{{enunciado}}</div>
+                    <div class="fecha">Categoría: {{categoria}}</div>
+                    <div class="fecha" style="margin-top: 4px;">
+                        🚩 {{total_reportes}} reporte{{#reportes_plural}}s{{/reportes_plural}}
+                        — último motivo: "{{ultimo_motivo}}"
+                    </div>
+                </div>
+
+                <div class="partida-resultado">
+                    <!-- Desestimar: el reporte era falso, la pregunta sigue aprobada -->
+                    <a href="?controller=habilitarPregunta&method=desestimar&id={{id}}"
+                       class="btn-aprobar">
+                        ✅ Desestimar
+                    </a>
+                    <!-- Rechazar: el reporte era válido, se quita la pregunta -->
+                    <a href="?controller=habilitarPregunta&method=rechazar&id={{id}}"
+                       class="btn-rechazar">
+                        ❌ Rechazar
+                    </a>
+                </div>
+
+            </div>
+        {{/preguntas_reportadas}}
+
+        {{^preguntas_reportadas}}
+            <div class="empty">
+                <strong>No hay preguntas reportadas</strong>
+                <p>Ningún jugador ha reportado preguntas hasta el momento.</p>
+            </div>
+        {{/preguntas_reportadas}}
+
+    </div>
+
     <div class="actions">
-        <a href="?controller=home&method=index" class="btn-main btn-ranking">
+        <a href="?controller=home&method=index" class="btn-main btn-ranking btn-volver">
             ⬅ Volver al inicio
         </a>
     </div>

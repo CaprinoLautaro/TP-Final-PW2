@@ -303,6 +303,11 @@ main {
     box-shadow: 0 8px 20px rgba(185,53,53,.35);
 }
 
+.btn-volver {
+    margin-top: 3.5rem;
+    margin-bottom: -5rem;
+}
+
 
 /* ── RESPONSIVE ── */
 @media (max-width: 480px) {
@@ -334,8 +339,9 @@ main {
     align-items: center;
 }
 
-
-
+.partida-card.reportada {
+    border-left: 4px solid var(--accent2);
+}
 
 /* ── POSICIÓN EN RANKING (dentro del puntaje-badge) ── */
 .ranking-pos-badge {
