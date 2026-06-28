@@ -4,11 +4,13 @@ class HabilitarPreguntaController
 {
     private $renderer;
     private $preguntaModel;
+    private $reporteModel;
 
-    public function __construct($renderer, $preguntaModel)
+    public function __construct($renderer, $preguntaModel, $reporteModel)
     {
         $this->renderer = $renderer;
         $this->preguntaModel = $preguntaModel;
+        $this->reporteModel = $reporteModel;
     }
 
     public function index()
@@ -24,13 +26,13 @@ class HabilitarPreguntaController
 
         $preguntas = $this->preguntaModel->obtenerPreguntasPendientes();
 
-        $preguntasReportadas = $this->preguntaModel->obtenerPreguntasReportadas(); // BUG 1: era $this->model->
+        $preguntasReportadas = $this->reporteModel->obtenerPreguntasReportadas(); // BUG 1: era $this->model->
 
         $this->renderer->render(
             'habilitarPreguntaView',
             [
                 'preguntas'            => $preguntas, // BUG 2: le faltaba la coma
-                'preguntas_reportadas' => $preguntasReportadas,
+                'preguntas_reportadas' => $preguntasReportadas
             ]
         );
     }
@@ -78,7 +80,7 @@ class HabilitarPreguntaController
         $preguntaId = (int) ($_GET['id'] ?? 0);
 
         if ($preguntaId) {
-            $this->preguntaModel->desestimar($preguntaId);
+            $this->reporteModel->desestimar($preguntaId);
         }
 
         header('Location: ?controller=habilitarPregunta&method=index');

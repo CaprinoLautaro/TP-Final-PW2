@@ -109,8 +109,8 @@ class Configurator
             new Request(),
             $this->getPartidaModel(),
             $this->getPreguntaModel(),
-            $this->getUserModel()
-
+            $this->getUserModel(),
+            $this->getReporteModel()
         );
     }
 
@@ -143,8 +143,6 @@ class Configurator
         );
     }
 
-
-
     private function getRankingModel()
     {
         return new RankingModel($this->getDatabase());
@@ -164,13 +162,17 @@ class Configurator
         return new CategoriaModel($this->getDatabase());
     }
 
+    private function getReporteModel()
+    {
+        return new ReporteModel($this->getDatabase());
+    }
+
     public function getHabilitarPreguntaController()
     {
         return new HabilitarPreguntaController(
             $this->getRenderer(),
-            $this->getPreguntaModel()
+            $this->getPreguntaModel(),
+            $this->getReporteModel()
         );
     }
-
-
 }

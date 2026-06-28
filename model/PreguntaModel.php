@@ -23,20 +23,9 @@ class PreguntaModel
         $usuarioId
     )
     {
-        $this->database->execute(
-            "INSERT INTO preguntas (
-            enunciado,
-            categoria_id,
-            creado_por,
-            estado
-        ) VALUES (?, ?, ?, 'pendiente')",
-            [
-                $enunciado,
-                $categoriaId,
-                $usuarioId
-            ]
-        );
-
+        $this->database->execute("INSERT INTO preguntas (enunciado, categoria_id,
+                                  creado_por, estado) VALUES (?, ?, ?, 'pendiente')",
+                                 [$enunciado, $categoriaId, $usuarioId]);
         return $this->database->lastInsertId();
     }
 
@@ -103,52 +92,6 @@ class PreguntaModel
         );
     }
 
-    public function obtenerPreguntasReportadas()
-    {
-        try {
-            $filas = $this->database->query(
-                "SELECT
-                    p.id,
-                    p.enunciado,
-                    c.nombre        AS categoria,
-                    COUNT(r.id)     AS total_reportes,
-                    (
-                        SELECT r2.motivo
-                        FROM reportes r2
-                        WHERE r2.pregunta_id = p.id
-                        ORDER BY r2.creado_en DESC
-                        LIMIT 1
-                    )               AS ultimo_motivo
-                FROM preguntas p
-                JOIN categorias c  ON c.id = p.categoria_id
-                JOIN reportes r    ON r.pregunta_id = p.id
-                WHERE p.estado = 'aprobada'
-                GROUP BY p.id, p.enunciado, c.nombre
-                ORDER BY total_reportes DESC",
-                []
-            );
-
-            $resultado = [];
-            foreach ($filas as $fila) {
-                $fila['reportes_plural'] = (int) $fila['total_reportes'] > 1;
-                $resultado[] = $fila;
-            }
-
-            return $resultado;
-
-        } catch (\Exception $e) {
-            return [];
-        }
-    }
-
-    public function desestimar($preguntaId)
-    {
-        $this->database->execute(
-            "DELETE FROM reportes WHERE pregunta_id = ?",
-            [$preguntaId]
-        );
-    }
-
     public function verificarAutoBaja($preguntaId, $umbral = 10)
     {
         $resultado = $this->database->query(
@@ -168,5 +111,13 @@ class PreguntaModel
                 [$preguntaId]
             );
         }
+    }
+
+    public function cambiarEstado($preguntaId, $estado)
+    {
+        $this->database->execute(
+            "UPDATE preguntas SET estado = ? WHERE id = ?",
+            [$estado, $preguntaId]
+        );
     }
 }
