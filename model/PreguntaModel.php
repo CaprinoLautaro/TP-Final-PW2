@@ -96,7 +96,7 @@ class PreguntaModel
     {
         $resultado = $this->database->query(
             "SELECT COUNT(*) AS total
-            FROM reportes
+            FROM reportes_preguntas
             WHERE pregunta_id = ?",
             [$preguntaId]
         );
