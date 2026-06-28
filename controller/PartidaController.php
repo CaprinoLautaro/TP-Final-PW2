@@ -6,8 +6,8 @@ class PartidaController
     private $request;
     private $partidaModel;
     private $preguntaModel;
-
     private $userModel;
+    private $reporteModel;
 
     const PREGUNTAS_POR_PARTIDA = 10;
     const LETRAS = ['A', 'B', 'C', 'D'];
@@ -19,13 +19,15 @@ class PartidaController
         $request,
         $partidaModel,
         $preguntaModel,
-        $userModel
+        $userModel,
+        $reporteModel
     ) {
         $this->renderer     = $renderer;
         $this->request      = $request;
         $this->partidaModel = $partidaModel;
         $this->preguntaModel = $preguntaModel;
         $this->userModel = $userModel;
+        $this->reporteModel = $reporteModel;
     }
 
     // ─────────────────────────────────────────────────────────────────
@@ -430,5 +432,50 @@ class PartidaController
         unset($_SESSION['partida']);
 
         $this->renderer->render("resultado", $datos);
+    }
+
+    public function reportar()
+    {
+        $this->verificarLogin();
+
+        if (empty($_SESSION['partida'])) {
+            header("Location: ?controller=home&method=index");
+            exit();
+        }
+
+        $usuarioId  = $_SESSION['usuario']['id'];
+        $pregunta = $this->partidaModel->obtenerPreguntaPorId($_SESSION['partida']['pregunta_actual_id']);
+
+        $this->renderer->render("reportarView", ["pregunta" => $pregunta, "usuario" => $usuarioId]);
+    }
+
+    public function procesarReporte() {
+        $this->verificarLogin();
+
+
+        $usuarioId  = $_SESSION['usuario']['id'];;
+        $preguntaId = trim($this->request->post("pregunta_id"));
+        $motivo     = trim($this->request->post("motivo"));
+
+        $pregunta = $this->partidaModel->obtenerPreguntaPorId($preguntaId);
+
+        if (empty($motivo)) {
+            $this->renderer->render('reportarView', [
+                'pregunta' => $pregunta,
+                'error'    => 'El motivo no puede estar vacío.'
+            ]);
+        }
+
+        $exito    = $this->reporteModel->procesarReporte($usuarioId, $preguntaId, $motivo);
+
+        if ($exito) {
+            $this->preguntaModel->cambiarEstado($preguntaId, "reportada");
+            $this->renderer->render("ReporteExitosoView", ["pregunta" => $pregunta]);
+        } else {
+            $this->render('reportarView', [
+                'pregunta' => $pregunta,
+                'error'    => 'No pudimos enviar tu reporte. Intentá de nuevo.'
+            ]);
+        }
     }
 }

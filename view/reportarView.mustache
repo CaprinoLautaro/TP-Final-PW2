@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Preguntados – Reportar pregunta</title>
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="./public/css/reportarView.css">
+</head>
+<body>
+
+{{>header}}
+
+<main class="reporte-main">
+    <a href="?controller=partida&method=jugar" class="reporte-back">← Volver al juego</a>
+
+    <div class="reporte-card">
+        <h1 class="reporte-titulo">Reportar pregunta</h1>
+
+        <div>
+            <p class="reporte-enunciado-label">Pregunta</p>
+            <div class="reporte-enunciado-box">{{pregunta.enunciado}}</div>
+        </div>
+
+        {{#error}}
+            <div class="reporte-error">
+                ⚠ {{error}}
+            </div>
+        {{/error}}
+
+        <form action="?controller=partida&method=procesarReporte" method="POST">
+            <input type="hidden" name="pregunta_id" value="{{pregunta.id}}">
+            <div class="reporte-field">
+                <label class="reporte-label">
+                    Motivo del reporte <span class="reporte-required">*</span>
+                </label>
+                <textarea
+                        name="motivo"
+                        class="reporte-textarea"
+                        rows="4"
+                        placeholder="Contanos qué está mal con esta pregunta..."
+                        required
+                ></textarea>
+            </div>
+
+            <div class="reporte-acciones">
+                <a href="?controller=home&method=index" class="reporte-btn-cancelar">Cancelar</a>
+                <button type="submit" class="reporte-btn-enviar">Enviar reporte</button>
+            </div>
+        </form>
+    </div>
+</main>
+
+{{>footer}}
+
+</body>
+</html>

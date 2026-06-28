@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Preguntados – Reporte enviado</title>
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="./public/css/reporteExitoView.css">
+</head>
+<body>
+
+{{>header}}
+
+<main class="exito-main">
+
+    <div class="exito-icono">⚑</div>
+
+    <div class="exito-card">
+        <h1 class="exito-titulo">Reporte enviado</h1>
+        <p class="exito-subtitulo">
+            Gracias por ayudarnos a mejorar el juego. Nuestro equipo va a revisar la pregunta a la brevedad.
+        </p>
+
+        <div class="exito-divider"></div>
+
+        <div class="exito-info">
+            <div class="exito-info-fila">
+                <span class="exito-info-key">Pregunta</span>
+                <span class="exito-info-val">{{pregunta.enunciado}}</span>
+            </div>
+            <div class="exito-info-fila">
+                <span class="exito-info-key">Estado del reporte</span>
+                <span class="exito-badge">Pendiente de revisión</span>
+            </div>
+        </div>
+
+        <div class="exito-divider"></div>
+
+        <div class="exito-acciones">
+            <a href="?controller=partida&method=jugar" class="exito-btn-primary">▶ Continuar jugando</a>
+            <a href="?controller=home&method=index" class="exito-btn-secondary">Ir al inicio</a>
+        </div>
+    </div>
+
+</main>
+
+{{>footer}}
+
+</body>
+</html>

@@ -193,3 +193,28 @@ body {
     min-width: 20px;
     text-align: center;
 }
+
+/* ── Botón reportar (dentro del card) ── */
+.reportar-wrapper {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 1rem;
+}
+
+.reportar-btn {
+    background: none;
+    border: none;
+    color: var(--muted);
+    font-family: 'Nunito', sans-serif;
+    font-size: 0.8rem;
+    cursor: pointer;
+    padding: 0.25rem 0.5rem;
+    border-radius: 6px;
+    transition: color 0.2s, background 0.2s;
+    text-decoration: none;
+}
+
+.reportar-btn:hover {
+    color: var(--accent);
+    background: rgba(233, 69, 96, 0.08);
+}
