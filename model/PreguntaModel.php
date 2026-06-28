@@ -64,6 +64,34 @@ class PreguntaModel
         );
     }
 
+    public function obtenerTodasLasPreguntas()
+    {
+        return $this->database->query(
+            "SELECT
+            p.id,
+            p.enunciado,
+            c.nombre AS categoria
+         FROM preguntas p
+         INNER JOIN categorias c
+             ON p.categoria_id = c.id
+         ORDER BY p.creado_en DESC"
+        );
+    }
+
+    public function obtenerPreguntaPorId($preguntaId)
+    {
+        return $this->database->query(
+            "SELECT
+            p.id,
+            p.enunciado,
+            categoria_id 
+            FROM preguntas p
+            WHERE p.id = ?",
+            [$preguntaId]
+        );
+        return $resultado[0] ?? null;
+    }
+
     public function obtenerPreguntasPendientes()
     {
         return $this->database->query(
@@ -168,5 +196,29 @@ class PreguntaModel
                 [$preguntaId]
             );
         }
+    }
+
+    public function actualizarPregunta($preguntaId, $enunciado, $categoriaId)
+    {
+        $this->database->execute(
+            "UPDATE preguntas 
+         SET enunciado = ?, 
+             categoria_id = ? 
+         WHERE id = ?",
+            [$enunciado, $categoriaId, $preguntaId]
+        );
+    }
+
+    public function actualizarOpcion($preguntaId, $texto, $esCorrecta, $orden)
+    {
+        // Buscamos la opción por el ID de la pregunta y su número de orden (1, 2, 3 o 4)
+        // De esta forma editamos el texto y si es correcta o no en una sola consulta
+        $this->database->execute(
+            "UPDATE opciones 
+         SET texto = ?, 
+             es_correcta = ? 
+         WHERE pregunta_id = ? AND orden = ?",
+            [$texto, $esCorrecta, $preguntaId, $orden]
+        );
     }
 }

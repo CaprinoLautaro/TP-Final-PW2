@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Preguntados - Editar Pregunta</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Nunito:wght@400;600;700;800&display=swap"
+          rel="stylesheet">
+    <link rel="stylesheet" href="./public/css/habilitarPreguntaView.css">
+</head>
+
+<body>
+
+{{> header}}
+
+<main>
+
+    <div class="welcome-card">
+        <h1>
+            <span>Moderación</span>
+            Editar pregunta
+        </h1>
+    </div>
+
+    <div class="section-title">Pregunta Original</div>
+    <div class="partidas-list">
+        <div class="partida-card pregunta-lectura-card">
+            <div class="columna-lectura">
+                <span class="badge-categoria-fija">
+                    {{#categorias}}{{#actual}}{{nombre}}{{/actual}}{{/categorias}}
+                </span>
+
+                <p class="enunciado-texto-fijo">{{pregunta.enunciado}}</p>
+
+                <ul class="lista-opciones-lectura">
+                    {{#opciones}}
+                        <li class="opcion-lectura-item {{#es_correcta}}correcta-resaltada{{/es_correcta}}">
+                            <span class="letra-formato">{{letra}}. </span>
+                            <span class="texto-opcion">{{texto}}</span>
+                            {{#es_correcta}}
+                                <span class="indicador-correcta-check">✔ Correcta</span>
+                            {{/es_correcta}}
+                        </li>
+                    {{/opciones}}
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <div class="section-title">Modificar Datos</div>
+    <div class="partidas-list">
+        <div class="partida-card formulario-card">
+            <form action="?controller=pregunta&method=actualizar" method="POST" class="formulario-pregunta">
+                <input type="hidden" name="id" value="{{pregunta.id}}">
+
+                <div class="form-group-trivia">
+                    <label for="enunciado">Nuevo Enunciado:</label>
+                    <textarea id="enunciado" name="enunciado" required class="input-trivia text-area-trivia">{{pregunta.enunciado}}</textarea>
+                </div>
+
+                <div class="form-group-trivia">
+                    <label for="categoria">Nueva Categoría:</label>
+                    <select id="categoria" name="categoria_id" required class="input-trivia select-trivia">
+                        {{#categorias}}
+                            <option value="{{id}}" {{#actual}}selected{{/actual}}>{{nombre}}</option>
+                        {{/categorias}}
+                    </select>
+                </div>
+
+                <fieldset class="opciones-fieldset">
+                    <legend>Opciones de Respuesta</legend>
+                    <p class="ayuda-formulario"><small>* Selecciona el botón para marcar cuál es la correcta.</small></p>
+
+                    <div class="opcion-input-group">
+                        <label class="radio-contenedor">
+                            <input type="radio" name="correcta" value="A" {{#opciones.0.es_correcta}}checked{{/opciones.0.es_correcta}} required>
+                            <span class="radio-custom">A</span>
+                        </label>
+                        <input type="text" name="opcion_a" value="{{opciones.0.texto}}" required class="input-trivia text-input-trivia">
+                    </div>
+
+                    <div class="opcion-input-group">
+                        <label class="radio-contenedor">
+                            <input type="radio" name="correcta" value="B" {{#opciones.1.es_correcta}}checked{{/opciones.1.es_correcta}} required>
+                            <span class="radio-custom">B</span>
+                        </label>
+                        <input type="text" name="opcion_b" value="{{opciones.1.texto}}" required class="input-trivia text-input-trivia">
+                    </div>
+
+                    <div class="opcion-input-group">
+                        <label class="radio-contenedor">
+                            <input type="radio" name="correcta" value="C" {{#opciones.2.es_correcta}}checked{{/opciones.2.es_correcta}} required>
+                            <span class="radio-custom">C</span>
+                        </label>
+                        <input type="text" name="opcion_c" value="{{opciones.2.texto}}" required class="input-trivia text-input-trivia">
+                    </div>
+
+                    <div class="opcion-input-group">
+                        <label class="radio-contenedor">
+                            <input type="radio" name="correcta" value="D" {{#opciones.3.es_correcta}}checked{{/opciones.3.es_correcta}} required>
+                            <span class="radio-custom">D)</span>
+                        </label>
+                        <input type="text" name="opcion_d" value="{{opciones.3.texto}}" required class="input-trivia text-input-trivia">
+                    </div>
+                </fieldset>
+
+                <div class="form-box-acciones">
+                    <button type="submit" class="btn-aprobar">Guardar Cambios</button>
+                    <a href="?controller=pregunta&method=editarPreguntas" class="btn-rechazar">Cancelar</a>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div class="actions">
+        <a href="?controller=home&method=index" class="btn-main btn-ranking btn-volver">
+            ⬅ Volver al inicio
+        </a>
+    </div>
+
+</main>
+
+{{> footer}}
+
+</body>
+</html>

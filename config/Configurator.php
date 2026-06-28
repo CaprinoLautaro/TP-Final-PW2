@@ -119,7 +119,8 @@ class Configurator
         return new PreguntaController(
             $this->getRenderer(),
             new Request(),
-            $this->getPreguntaModel()
+            $this->getPreguntaModel(),
+            $this->getPartidaModel()
         );
     }
 

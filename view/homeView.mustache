@@ -5,7 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Preguntados - Lobby</title>
 
-    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Nunito:wght@400;600;700;800&display=swap"
+          rel="stylesheet">
 
     <link rel="stylesheet" href="./public/css/homeView.css">
 </head>
@@ -61,26 +62,34 @@
     <!-- Botones principales -->
     <div class="actions">
 
-        <!-- Fila superior: Ranking + Crear pregunta + Categoria -->
+        <!-- Fila superior: Ranking + Crear pregunta + Modificar pregunta -->
         <div class="actions-secundarias">
             <a href="?controller=ranking&method=index" class="btn-main btn-ranking">
                 🏆 Ver ranking
             </a>
 
             <a href="?controller=pregunta&method=crear" class="btn-main btn-crear">
-                ✏️ Crear pregunta
+                ➕ Crear pregunta
             </a>
+
+
         </div>
 
         {{#esAdminOEditor}}
             <div class="actions-secundarias-admin">
 
+                <div class="actions-secundarias">
+                    <a href="?controller=Pregunta&method=editarPreguntas" class="btn-main btn-cat">
+                        ✏️ Editar preguntas
+                    </a>
+
+                    <a href="?controller=habilitarPregunta&method=index" class="btn-main btn-cat">
+                        ✅ Revisar preguntas
+                    </a>
+                </div>
+
                 <a href="?controller=categoria&method=index" class="btn-main btn-cat">
                     🏷️ Categorías
-                </a>
-
-                <a href="?controller=habilitarPregunta&method=index" class="btn-main btn-cat">
-                    ✅ Revisar preguntas
                 </a>
 
             </div>

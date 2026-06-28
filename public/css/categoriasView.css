@@ -31,6 +31,35 @@ main {
 }
 
 
+/* ── BIENVENIDA ── */
+.welcome-card {
+    background: linear-gradient(135deg, var(--accent) 0%, #c0392b 100%);
+    border-radius: var(--radius);
+    padding: 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 1.75rem;
+    flex-wrap: wrap;
+    gap: 1rem;
+}
+
+.welcome-card h1 {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 2rem;
+    letter-spacing: 1px;
+    line-height: 1.1;
+}
+
+.welcome-card h1 span {
+    display: block;
+    font-family: 'Nunito', sans-serif;
+    font-size: 1rem;
+    font-weight: 600;
+    opacity: 0.85;
+    margin-bottom: 4px;
+}
+
 
 .form-title {
     font-family: 'Bebas Neue', sans-serif;
@@ -365,5 +394,10 @@ main {
     .btn-guardar-categoria {
         width: 100%;
     }
+    .welcome-card {
+        flex-direction: column;
+        text-align: center;
+    }
+
 }
 

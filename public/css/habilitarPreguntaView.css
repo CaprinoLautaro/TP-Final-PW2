@@ -269,7 +269,8 @@ main {
     filter: brightness(1.1);
 }
 .btn-aprobar,
-.btn-rechazar{
+.btn-rechazar,
+.btn-editar{
     display: inline-flex;
     align-items: center;
     gap: 8px;
@@ -293,6 +294,11 @@ main {
     color: white;
 }
 
+.btn-editar{
+    background: orange;
+    color: black;
+}
+
 .btn-aprobar:hover{
     transform: translateY(-2px);
     box-shadow: 0 8px 20px rgba(31,143,78,.35);
@@ -301,6 +307,11 @@ main {
 .btn-rechazar:hover{
     transform: translateY(-2px);
     box-shadow: 0 8px 20px rgba(185,53,53,.35);
+}
+
+.btn-editar:hover{
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(31,143,78,.35);
 }
 
 .btn-volver {
@@ -382,3 +393,220 @@ main {
     border: 2px solid var(--muted);
 }
 
+
+
+.pregunta-lectura-card, .formulario-card {
+    display: block; /* Ocupa el ancho completo con el padding del contenedor superior */
+    border-left: 4px solid var(--muted);
+}
+
+.columna-lectura {
+    width: 100%;
+}
+
+.badge-categoria-fija {
+    display: inline-block;
+    background: #ff9800;
+    color: #fff;
+    padding: 0.3rem 0.8rem;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    margin-bottom: 0.75rem;
+}
+
+.enunciado-texto-fijo {
+    font-size: 1.15rem;
+    font-weight: 700;
+    margin-bottom: 1rem;
+    color: var(--text);
+}
+
+.lista-opciones-lectura {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+}
+
+.opcion-lectura-item {
+    font-size: 1rem;
+    color: var(--text);
+    display: flex;
+    align-items: center;
+}
+
+.opcion-lectura-item.correcta-resaltada {
+    background: rgba(46, 204, 113, 0.15);
+    border-color: #2ecc71;
+}
+
+.letra-circulo {
+    background: var(--bg);
+    width: 26px;
+    height: 26px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    font-weight: 700;
+    font-size: 0.85rem;
+}
+
+.badge-status-correcta {
+    margin-left: auto;
+    font-size: 0.7rem;
+    font-weight: 700;
+    background: #2ecc71;
+    color: #fff;
+    padding: 2px 6px;
+    border-radius: 4px;
+}
+
+.formulario-pregunta {
+    width: 100%;
+}
+
+.form-group-trivia {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    margin-bottom: 1.25rem;
+}
+
+.form-group-trivia label {
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.input-trivia {
+    background: var(--bg);
+    border: 2px solid rgba(255, 255, 255, 0.1);
+    border-radius: 10px;
+    padding: 0.75rem;
+    color: var(--text);
+    font-family: 'Nunito', sans-serif;
+    font-size: 0.95rem;
+    transition: border-color 0.2s;
+}
+
+.input-trivia:focus {
+    outline: none;
+    border-color: var(--accent);
+}
+
+.text-area-trivia {
+    min-height: 70px;
+    resize: vertical;
+}
+
+.select-trivia {
+    cursor: pointer;
+}
+
+.opciones-fieldset {
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    padding: 1.25rem;
+    border-radius: var(--radius);
+    margin-bottom: 1.5rem;
+}
+
+.opciones-fieldset legend {
+    padding: 0 0.5rem;
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: var(--muted);
+    text-transform: uppercase;
+}
+
+.ayuda-formulario {
+    color: var(--muted);
+    font-size: 0.75rem;
+    margin-bottom: 1rem;
+}
+
+.opcion-input-group {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 0.75rem;
+}
+
+.text-input-trivia {
+    flex: 1;
+}
+
+.radio-contenedor {
+    position: relative;
+    cursor: pointer;
+}
+
+.radio-contenedor input {
+    position: absolute;
+    opacity: 0;
+    cursor: pointer;
+}
+
+.radio-custom {
+    width: 32px;
+    height: 32px;
+    background: var(--bg);
+    border: 2px solid rgba(255, 255, 255, 0.15);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 800;
+    font-size: 0.85rem;
+    transition: all 0.2s;
+    color: var(--muted);
+}
+
+.radio-contenedor input:checked ~ .radio-custom {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: #fff;
+    box-shadow: 0 0 10px rgba(233, 69, 96, 0.4);
+}
+
+.form-box-acciones {
+    display: flex;
+    gap: 1rem;
+    margin-top: 1.5rem;
+}
+
+.form-box-acciones .btn-aprobar,
+.form-box-acciones .btn-rechazar {
+    flex: 1;
+    justify-content: center;
+    cursor: pointer;
+    border: none;
+    text-align: center;
+}
+
+.letra-formato {
+    font-weight: 700;
+    margin-right: 0.25rem;
+}
+
+.opcion-lectura-item.correcta-resaltada {
+    font-weight: 800; /* Texto en negrita */
+    background: rgba(46, 204, 113, 0.1); /* Un fondo verde sutil que combine con la UI */
+    padding: 0.4rem 0.6rem;
+    border-radius: 6px;
+}
+
+.indicador-correcta-check {
+    color: #2ecc71; /* Verde brillante de tu paleta */
+    font-weight: 800;
+    margin-left: 0.5rem;
+    text-transform: uppercase;
+    font-size: 0.85rem;
+    letter-spacing: 0.5px;
+}
