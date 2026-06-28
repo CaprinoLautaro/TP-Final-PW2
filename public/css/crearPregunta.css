@@ -39,7 +39,7 @@ main {
 
 .section-title {
     font-family: 'Bebas Neue', sans-serif;
-    font-size: 2rem;
+    font-size: 1.5rem;
     letter-spacing: 1px;
     margin-bottom: 1.5rem;
 }
@@ -125,4 +125,199 @@ main {
     transform: scale(.97);
 }
 
+/* ── CLASES COMPLEMENTARIAS PARA UNIFICAR LA UI ── */
+
+/* Tarjeta de bienvenida superior */
+.welcome-card {
+    background: linear-gradient(135deg, #e94560 0%, #c0392b 100%);
+    border-radius: var(--radius);
+    padding: 2rem;
+    margin-bottom: 1.75rem;
+}
+
+.welcome-card h1 {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 2rem;
+    letter-spacing: 1px;
+    line-height: 1.1;
+}
+
+.welcome-card h1 span {
+    display: block;
+    font-family: 'Nunito', sans-serif;
+    font-size: 1rem;
+    font-weight: 600;
+    opacity: 0.85;
+    margin-bottom: 4px;
+}
+
+/* Envoltura de la lista y la tarjeta del formulario */
+.partidas-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.formulario-card {
+    background: var(--card);
+    border-radius: var(--radius);
+    padding: 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    border-left: 4px solid var(--muted); /* Borde celeste grisáceo apagado */
+}
+
+.formulario-pregunta {
+    width: 100%;
+}
+
+.form-group-trivia {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    margin-bottom: 1.25rem;
+}
+
+.form-group-trivia label {
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+/* Reutilizamos el estilo de los inputs integrados */
+.input-trivia {
+    width: 100%;
+    background: var(--surface);
+    border: 1px solid #2a2a4a;
+    border-radius: 8px;
+    padding: 0.9rem;
+    color: var(--text);
+    font-family: 'Nunito', sans-serif;
+    font-size: 0.95rem;
+    transition: border-color 0.2s;
+}
+
+.input-trivia:focus {
+    outline: none;
+    border-color: #2ecc71;
+}
+
+.text-area-trivia {
+    min-height: 120px;
+    resize: vertical;
+}
+
+/* Fieldset contenedor de respuestas */
+.opciones-fieldset {
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    padding: 1.25rem;
+    border-radius: var(--radius);
+    margin-bottom: 1.5rem;
+}
+
+.opciones-fieldset legend {
+    padding: 0 0.5rem;
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: var(--muted);
+    text-transform: uppercase;
+}
+
+.ayuda-formulario {
+    color: var(--muted);
+    font-size: 0.75rem;
+    margin-bottom: 1rem;
+}
+
+.opcion-input-group {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 0.75rem;
+}
+
+.text-input-trivia {
+    flex: 1;
+}
+
+/* Botones circulares para las letras del radio */
+.radio-contenedor {
+    position: relative;
+    cursor: pointer;
+}
+
+.radio-contenedor input {
+    position: absolute;
+    opacity: 0;
+    cursor: pointer;
+}
+
+.radio-custom {
+    width: 32px;
+    height: 32px;
+    background: var(--bg);
+    border: 2px solid rgba(255, 255, 255, 0.15);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 800;
+    font-size: 0.85rem;
+    transition: all 0.2s;
+    color: var(--muted);
+}
+
+.radio-contenedor input:checked ~ .radio-custom {
+    background: #e94560; /* Color de acento al seleccionarse */
+    border-color: #e94560;
+    color: #fff;
+    box-shadow: 0 0 10px rgba(233, 69, 96, 0.4);
+}
+
+/* Caja de botones de acción inferiores */
+.form-box-acciones {
+    display: flex;
+    gap: 1rem;
+    margin-top: 1.5rem;
+}
+
+.form-box-acciones .btn-aprobar,
+.form-box-acciones .btn-rechazar {
+    flex: 1;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 10px 18px;
+    border-radius: 12px;
+    font-weight: 700;
+    text-decoration: none;
+    border: none;
+    cursor: pointer;
+    transition: all 0.25s ease;
+}
+
+.btn-aprobar {
+    background: #1f8f4e;
+    color: white;
+}
+
+.btn-rechazar {
+    background: #b93535;
+    color: white;
+}
+
+.form-box-acciones .btn-aprobar:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(31,143,78,.35);
+}
+
+.form-box-acciones .btn-rechazar:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(185,53,53,.35);
+}
 
