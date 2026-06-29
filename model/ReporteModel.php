@@ -53,11 +53,11 @@ class ReporteModel
         );
     }
 
-    public function cambiarEstado($preguntaId, $estado)
+    public function cambiarEstado($reporteId, $estado)
     {
         $this->database->execute(
-            "UPDATE preguntas SET estado = ? WHERE id = ?",
-            [$estado, $preguntaId]
+            "UPDATE reportes_preguntas SET estado = ? WHERE id = ?",
+            [$estado, $reporteId]
         );
     }
 }
