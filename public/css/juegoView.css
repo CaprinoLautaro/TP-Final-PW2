@@ -204,7 +204,7 @@ body {
 .reportar-btn {
     background: none;
     border: none;
-    color: var(--muted);
+    color: #6b7280;
     font-family: 'Nunito', sans-serif;
     font-size: 0.8rem;
     cursor: pointer;
@@ -215,6 +215,6 @@ body {
 }
 
 .reportar-btn:hover {
-    color: var(--accent);
+    color: #e94560;
     background: rgba(233, 69, 96, 0.08);
 }
