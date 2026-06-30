@@ -66,26 +66,44 @@ class PartidaController
     // ─────────────────────────────────────────────────────────────────
     public function nueva()
     {
-
         $this->verificarLogin();
-
         $usuarioId = $_SESSION['usuario']['id'];
 
-        $dificultad = $this->partidaModel
-            ->dificultadSegunNivel($usuarioId);
 
+        $partidaAbierta = $this->partidaModel->obtenerPartidaEnCurso($usuarioId);
+        if ($partidaAbierta) {
+            $this->partidaModel->terminarPartida(
+                $partidaAbierta['id'],
+                $usuarioId,
+                0,
+                'abandonada'
+            );
+
+
+            $_SESSION['partida'] = [
+                'id'                  => $partidaAbierta['id'],
+                'puntaje'             => 0,
+                'puntaje_final'       => 0,
+                'indice_actual'       => 0,
+                'total'               => self::PREGUNTAS_POR_PARTIDA,
+                'motivo_derrota'      => 'abandono',
+                'respuesta_incorrecta'=> ['correcta_texto' => '—'],
+                'usuario'             => $this->userModel->obtenerUsuarioPorId($usuarioId),
+            ];
+
+            header("Location: ?controller=partida&method=resultado");
+            exit();
+        }
+
+        $dificultad = $this->partidaModel->dificultadSegunNivel($usuarioId);
         $categorias = $this->preguntaModel->obtenerCategorias();
 
         if (empty($categorias)) {
-            $this->renderer->render(
-                "error",
-                ["mensaje" => "No hay categorías disponibles en este momento."]
-            );
+            $this->renderer->render("error", ["mensaje" => "No hay categorías disponibles."]);
             return;
         }
 
-        $partidaId = $this->partidaModel
-            ->crearPartida($usuarioId);
+        $partidaId = $this->partidaModel->crearPartida($usuarioId);
 
         $_SESSION['partida'] = [
             'id'            => $partidaId,
@@ -97,7 +115,6 @@ class PartidaController
 
         header("Location: ?controller=partida&method=ruleta");
         exit();
-
     }
 
     // ─────────────────────────────────────────────────────────────────
@@ -411,7 +428,8 @@ class PartidaController
 
         $motivoDerrota = $sesion['motivo_derrota'] ?? '';
         $perdioPorTiempo = !$gano && $motivoDerrota === 'tiempo';
-        $perdioPorError = !$gano && $motivoDerrota !== 'tiempo';
+        $perdioPorError = !$gano && $motivoDerrota === 'error';
+        $abandono  = !$gano && $motivoDerrota === 'abandono';
 
         $datos = [
             "puntaje"              => $sesion['puntaje_final']
@@ -421,6 +439,7 @@ class PartidaController
             "perdio"               => !$gano,
             "perdio_por_tiempo"     => $perdioPorTiempo,
             "perdio_por_error"     => $perdioPorError,
+            "abandono"          => $abandono,
 
             "correcta_texto"       => $sesion['respuesta_incorrecta']['correcta_texto']
                 ?? null,
@@ -469,7 +488,7 @@ class PartidaController
         $exito    = $this->reporteModel->procesarReporte($usuarioId, $preguntaId, $motivo);
 
         if ($exito) {
-            $this->preguntaModel->cambiarEstado($preguntaId, "reportada");
+            $this->reporteModel->cambiarEstado($preguntaId, "reportada");
             $this->renderer->render("ReporteExitosoView", ["pregunta" => $pregunta]);
         } else {
             $this->render('reportarView', [
@@ -478,4 +497,33 @@ class PartidaController
             ]);
         }
     }
+    public function abandonar()
+    {
+        $this->verificarLogin();
+
+        if (empty($_SESSION['partida'])) {
+            header("Location: ?controller=home&method=index");
+            exit();
+        }
+
+        $sesion    = $_SESSION['partida'];
+        $usuarioId = $_SESSION['usuario']['id'];
+
+        // null = penalización máxima (3 pts) según calcularPenalizacion()
+        $this->partidaModel->terminarPartida(
+            $sesion['id'],
+            $usuarioId,
+            0,
+            'abandonada'
+        );
+
+        $_SESSION['partida']['puntaje_final']       = $sesion['puntaje'] ?? 0;
+        $_SESSION['partida']['motivo_derrota']       = 'abandono';
+        $_SESSION['partida']['respuesta_incorrecta'] = ['correcta_texto' => '—'];
+        $_SESSION['partida']['usuario']              = $this->userModel->obtenerUsuarioPorId($usuarioId);
+
+        header("Location: ?controller=partida&method=resultado");
+        exit();
+    }
+
 }

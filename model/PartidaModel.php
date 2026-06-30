@@ -267,23 +267,19 @@ class PartidaModel
         return 1;
     }
 
-    public function terminarPartida($partidaId, $usuarioId, $preguntasPasadas = null)
+    public function terminarPartida($partidaId, $usuarioId, $preguntasPasadas = null, $estado = 'terminada')
     {
         $this->database->execute(
-            "UPDATE partidas
-             SET estado = 'terminada', terminada_en = NOW()
-             WHERE id = ?", [$partidaId]
+            "UPDATE partidas SET estado = ?, terminada_en = NOW() WHERE id = ?",
+            [$estado, $partidaId]
         );
 
         $resultado = $this->database->query("SELECT puntaje FROM partidas WHERE id = ?", [$partidaId]);
-
         $puntaje = (int)($resultado[0]['puntaje'] ?? 0);
 
         if ($puntaje > 0) {
             $this->database->execute(
-                "UPDATE usuarios
-                 SET puntaje_total = puntaje_total + ?
-                 WHERE id = ?",
+                "UPDATE usuarios SET puntaje_total = puntaje_total + ? WHERE id = ?",
                 [$puntaje, $usuarioId]
             );
         }
@@ -291,14 +287,24 @@ class PartidaModel
         $penalizacion = $this->calcularPenalizacion($preguntasPasadas);
         if ($penalizacion > 0) {
             $this->database->execute(
-                "UPDATE usuarios
-                 SET puntaje_total = GREATEST(0, puntaje_total - ?)
-                 WHERE id = ?",
+                "UPDATE usuarios SET puntaje_total = GREATEST(0, puntaje_total - ?) WHERE id = ?",
                 [$penalizacion, $usuarioId]
             );
         }
+
         $this->actualizarNivelUsuario($usuarioId);
         return $puntaje;
+    }
+
+    public function obtenerPartidaEnCurso($usuarioId)
+    {
+        $resultado = $this->database->query(
+            "SELECT id FROM partidas 
+         WHERE usuario_id = ? AND estado = 'en_curso'
+         ORDER BY creado_en DESC LIMIT 1",
+            [$usuarioId]
+        );
+        return $resultado[0] ?? null;
     }
 
     public function obtenerPuntaje($partidaId)
@@ -440,4 +446,6 @@ class PartidaModel
                                       WHERE id = ?;", [$dificultad, $preguntaId]);
         }
     }
+
+
 }

@@ -47,6 +47,13 @@
 {{>footer}}
 
 <script>
+    history.pushState({ enJuego: true }, '');
+
+    window.addEventListener('popstate', function () {
+        window.location.href = '?controller=partida&method=abandonar';
+    });
+
+    // ── Animación de ruleta existente (sin cambios) ──
     document.addEventListener("DOMContentLoaded", function () {
         const disco = document.getElementById('ruleta-disco');
         const resultado = document.getElementById('ruleta-resultado');

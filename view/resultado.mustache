@@ -76,6 +76,23 @@
         </div>
     {{/perdio_por_tiempo}}
 
+    {{#abandono}}
+        <div class="resultado-card resultado-perdio">
+            <div class="resultado-icono">🚪</div>
+            <h2 class="resultado-titulo">¡Abandonaste!</h2>
+            <p class="resultado-subtitulo">Saliste de la partida antes de terminarla</p>
+
+            <div class="puntaje-grande">
+                <span class="puntaje-numero">{{puntaje}}</span>
+                <span class="puntaje-label">puntos acumulados</span>
+            </div>
+
+            <div class="penalizacion-box">
+                <p class="penalizacion-texto">📉 Perdiste <strong>3 puntos</strong> por abandonar la partida</p>
+            </div>
+        </div>
+    {{/abandono}}
+
     <!-- ── Acciones ── -->
     <div class="resultado-acciones">
         <a

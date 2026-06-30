@@ -73,8 +73,14 @@
 </main>
 
 {{>footer}}
-
 <script>
+    history.pushState({ enJuego: true }, '');
+
+    window.addEventListener('popstate', function () {
+        window.location.href = '?controller=partida&method=abandonar';
+    });
+
+    // ── Timer existente (sin cambios) ──
     document.addEventListener("DOMContentLoaded", function () {
         let tiempoRestante = parseInt("{{tiempo_restante}}") || 15;
         const selectorTimer = document.getElementById('timer');
@@ -93,7 +99,7 @@
             }
 
             if (tiempoRestante <= 0) {
-                clearInterval(cuentaRegresiva); // Frenamos el reloj
+                clearInterval(cuentaRegresiva);
                 tiempoTerminado();
             }
         }, 1000);
@@ -104,11 +110,11 @@
             inputTiempoAgotado.name = 'tiempo_agotado';
             inputTiempoAgotado.value = '1';
             formulario.appendChild(inputTiempoAgotado);
-
             formulario.submit();
         }
     });
 </script>
+
 
 </body>
 </html>

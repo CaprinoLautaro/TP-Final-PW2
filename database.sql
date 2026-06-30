@@ -85,7 +85,7 @@ CREATE TABLE partidas (
                           id              INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
                           usuario_id      INT UNSIGNED NOT NULL,
                           puntaje         INT UNSIGNED NOT NULL DEFAULT 0,
-                          estado          ENUM('en_curso','terminada') NOT NULL DEFAULT 'en_curso',
+                          estado ENUM('en_curso','terminada','abandonada') NOT NULL DEFAULT 'en_curso',
                           creado_en       DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
                           terminada_en    DATETIME
 
