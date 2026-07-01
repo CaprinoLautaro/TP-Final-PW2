@@ -6,7 +6,6 @@
     <title>Preguntados - Panel de Administración</title>
 
     <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
-
     <link rel="stylesheet" href="./public/css/panelAdmin.css">
 </head>
 
@@ -19,8 +18,12 @@
     <div class="admin-header-bar">
         <h1 class="admin-title">PANEL DE CONTROL</h1>
         <div class="admin-botones no-print">
-            <a href="index.php?controller=home&method=index" class="btn-main btn-volver" style="max-width: 150px;">◄ Volver</a>
-            <button onclick="window.print()" class="btn-main btn-imprimir" style="max-width: 150px; border: none;">🖨️ Imprimir</button>
+            <a href="index.php?controller=home&method=index"
+               class="btn-main btn-volver" style="max-width:150px;">◄ Volver</a>
+            <button onclick="window.print()"
+                    class="btn-main btn-imprimir" style="max-width:150px; border:none;">
+                🖨️ Imprimir
+            </button>
         </div>
     </div>
 
@@ -34,6 +37,7 @@
         </div>
     </div>
 
+    <!-- KPIs -->
     <div class="kpi-grid">
         <div class="kpi-card">
             <h3>👥 Jugadores Totales</h3>
@@ -56,53 +60,251 @@
             <p class="valor">{{preguntas_creadas}}</p>
         </div>
     </div>
+
+    <!-- Distribución por País -->
     <div class="reporte-section">
         <h2 class="section-title">Distribución por País</h2>
-        <table class="tabla-admin">
-            <thead>
-            <tr>
-                <th>País</th>
-                <th>Cantidad de Usuarios</th>
-                <th>Porcentaje</th>
-            </tr>
-            </thead>
-            <tbody>
-            {{#usuarios_pais}}
-                <tr>
-                    <td>{{pais}}</td>
-                    <td>{{cantidad}}</td>
-                    <td class="destaque-porcentaje">{{porcentaje}}%</td>
-                </tr>
-            {{/usuarios_pais}}
-            </tbody>
-        </table>
+
+        <div class="tabla-y-grafico">
+            <table class="tabla-admin">
+                <thead>
+                    <tr>
+                        <th>País</th>
+                        <th>Cantidad</th>
+                        <th>Porcentaje</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {{#usuarios_pais}}
+                    <tr>
+                        <td>{{pais}}</td>
+                        <td>{{cantidad}}</td>
+                        <td class="destaque-porcentaje">{{porcentaje}}%</td>
+                    </tr>
+                    {{/usuarios_pais}}
+                </tbody>
+            </table>
+
+            <div class="grafico-wrapper">
+                <canvas id="graficoPais"></canvas>
+            </div>
+        </div>
     </div>
 
+    <!-- Distribución por Sexo y Edad -->
+    <div class="reporte-section">
+        <h2 class="section-title">Demografía de Usuarios</h2>
+
+        <div class="graficos-doble">
+            <div class="grafico-donut-bloque">
+                <h3 class="grafico-subtitulo">Por Sexo</h3>
+                <canvas id="graficoSexo"></canvas>
+            </div>
+            <div class="grafico-donut-bloque">
+                <h3 class="grafico-subtitulo">Por Edad</h3>
+                <canvas id="graficoEdad"></canvas>
+            </div>
+        </div>
+    </div>
+
+    <!-- Rendimiento de Jugadores -->
     <div class="reporte-section">
         <h2 class="section-title">Rendimiento de Jugadores</h2>
-        <table class="tabla-admin">
-            <thead>
-            <tr>
-                <th>Usuario</th>
-                <th>Partidas Jugadas</th>
-                <th>% de Aciertos</th>
-            </tr>
-            </thead>
-            <tbody>
-            {{#rendimiento_usuarios}}
-                <tr>
-                    <td>{{username}}</td>
-                    <td>{{partidas}}</td>
-                    <td class="destaque-aciertos">{{porcentaje_aciertos}}%</td>
-                </tr>
-            {{/rendimiento_usuarios}}
-            </tbody>
-        </table>
+
+        <div class="tabla-y-grafico">
+            <table class="tabla-admin">
+                <thead>
+                    <tr>
+                        <th>Usuario</th>
+                        <th>Partidas</th>
+                        <th>% Aciertos</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {{#rendimiento_usuarios}}
+                    <tr>
+                        <td>{{username}}</td>
+                        <td>{{partidas}}</td>
+                        <td class="destaque-aciertos">{{porcentaje_aciertos}}%</td>
+                    </tr>
+                    {{/rendimiento_usuarios}}
+                </tbody>
+            </table>
+
+            <div class="grafico-wrapper">
+                <canvas id="graficoRendimiento"></canvas>
+            </div>
+        </div>
     </div>
 
 </main>
 
 {{> footer}}
+
+<!-- Chart.js desde CDN -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+
+<script>
+const dataPais        = {{{json_pais}}};
+const dataSexo        = {{{json_sexo}}};
+const dataEdad        = {{{json_edad}}};
+const dataRendimiento = {{{json_rendimiento}}};
+
+const COLORES = [
+    '#e94560', '#f5a623', '#6c5ce7', '#00b894',
+    '#0984e3', '#fd79a8', '#55efc4', '#fdcb6e'
+];
+
+Chart.defaults.color = '#7a7a9a';
+Chart.defaults.font.family = 'Nunito';
+
+/**
+ * Si no hay datos, oculta el canvas y muestra un cartel dentro del wrapper.
+ * Devuelve true si hay datos, false si no.
+ */
+function mostrarVacioSiCorresponde(canvasId, datos) {
+    if (datos.length > 0) return true;
+
+    const canvas = document.getElementById(canvasId);
+    const wrapper = canvas.closest('.grafico-wrapper, .grafico-donut-bloque');
+
+    canvas.style.display = 'none';
+
+    const msg = document.createElement('div');
+    msg.style.cssText = `
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        height: 100%;
+        min-height: 120px;
+        color: var(--muted);
+        font-size: 0.9rem;
+        font-weight: 700;
+        text-align: center;
+        padding: 1rem;
+    `;
+    msg.textContent = 'Todavía no hay suficientes datos.';
+    wrapper.appendChild(msg);
+
+    return false;
+}
+
+// ── Barras horizontales: País ──
+if (mostrarVacioSiCorresponde('graficoPais', dataPais)) {
+    new Chart(document.getElementById('graficoPais'), {
+        type: 'bar',
+        data: {
+            labels: dataPais.map(d => d.pais),
+            datasets: [{
+                label: 'Usuarios',
+                data: dataPais.map(d => d.cantidad),
+                backgroundColor: COLORES[0],
+                borderRadius: 6,
+            }]
+        },
+        options: {
+            indexAxis: 'y',
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: { legend: { display: false } },
+            scales: {
+                x: { grid: { color: '#2a2a4a' }, ticks: { precision: 0 } },
+                y: { grid: { display: false } }
+            }
+        }
+    });
+}
+
+// ── Donut: Sexo ──
+if (mostrarVacioSiCorresponde('graficoSexo', dataSexo)) {
+    new Chart(document.getElementById('graficoSexo'), {
+        type: 'doughnut',
+        data: {
+            labels: dataSexo.map(d => d.sexo),
+            datasets: [{
+                data: dataSexo.map(d => d.cantidad),
+                backgroundColor: COLORES,
+                borderWidth: 0,
+            }]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                legend: { position: 'bottom' },
+                tooltip: {
+                    callbacks: {
+                        label: ctx => {
+                            const cantidad = ctx.raw;
+                            const palabra = cantidad === 1 ? 'usuario' : 'usuarios';
+                            return ` ${ctx.label}: ${cantidad} ${palabra} (${dataSexo[ctx.dataIndex].porcentaje}%)`;
+                        }
+                    }
+                }
+            }
+        }
+    });
+}
+
+// ── Donut: Edad ──
+if (mostrarVacioSiCorresponde('graficoEdad', dataEdad)) {
+    new Chart(document.getElementById('graficoEdad'), {
+        type: 'doughnut',
+        data: {
+            labels: dataEdad.map(d => d.grupo),
+            datasets: [{
+                data: dataEdad.map(d => d.cantidad),
+                backgroundColor: [COLORES[1], COLORES[2], COLORES[3]],
+                borderWidth: 0,
+            }]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                legend: { position: 'bottom' },
+                tooltip: {
+                    callbacks: {
+                        label: ctx => {
+                            const cantidad = ctx.raw;
+                            const palabra = cantidad === 1 ? 'usuario' : 'usuarios';
+                            return ` ${ctx.label}: ${cantidad} ${palabra} (${dataEdad[ctx.dataIndex].porcentaje}%)`;
+                        }
+                    }
+                }
+            }
+        }
+    });
+}
+
+// ── Barras: Rendimiento ──
+if (mostrarVacioSiCorresponde('graficoRendimiento', dataRendimiento)) {
+    new Chart(document.getElementById('graficoRendimiento'), {
+        type: 'bar',
+        data: {
+            labels: dataRendimiento.map(d => d.username),
+            datasets: [{
+                label: '% de aciertos',
+                data: dataRendimiento.map(d => d.porcentaje_aciertos),
+                backgroundColor: COLORES[0],
+                borderRadius: 6,
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: { legend: { display: false } },
+            scales: {
+                y: {
+                    min: 0,
+                    max: 100,
+                    grid: { color: '#2a2a4a' },
+                    ticks: { callback: v => v + '%' }
+                },
+                x: { grid: { display: false } }
+            }
+        }
+    });
+}
+</script>
 
 </body>
 </html>

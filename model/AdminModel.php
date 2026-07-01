@@ -84,27 +84,37 @@ class AdminModel
 
         return $resultados;
     }
+
     public function getUsuariosPorSexo($filtro)
     {
         $condicion = $this->getCondicionFecha($filtro, 'creado_en');
-        $totalUsuarios = $this->getUsuariosNuevos($filtro);
 
-        if ($totalUsuarios == 0) return [];
-
-        $sql = "SELECT sexo, COUNT(*) AS cantidad 
+        $sql = "SELECT CASE 
+                        WHEN sexo IS NULL OR sexo = '' THEN 'Prefiero no cargarlo'
+                        ELSE sexo
+                    END AS sexo,
+                    COUNT(*) AS cantidad 
                 FROM usuarios 
-                WHERE 1=1" . $condicion . " 
-                GROUP BY sexo 
+                WHERE 1=1" . $condicion . "
+                GROUP BY CASE 
+                            WHEN sexo IS NULL OR sexo = '' THEN 'Prefiero no cargarlo'
+                            ELSE sexo
+                        END
                 ORDER BY cantidad DESC";
 
         $resultados = $this->database->query($sql);
 
+        if (empty($resultados)) return [];
+
+        $total = array_sum(array_column($resultados, 'cantidad'));
+
         foreach ($resultados as &$fila) {
-            $fila['porcentaje'] = round(($fila['cantidad'] / $totalUsuarios) * 100, 1);
+            $fila['porcentaje'] = round(($fila['cantidad'] / $total) * 100, 1);
         }
 
         return $resultados;
     }
+
     public function getUsuariosPorEdad($filtro)
     {
         $condicion = $this->getCondicionFecha($filtro, 'creado_en');
@@ -114,9 +124,9 @@ class AdminModel
 
         $sql = "SELECT 
                     CASE 
-                        WHEN (YEAR(CURDATE()) - anio_nacimiento) < 18 THEN 'Menores'
-                        WHEN (YEAR(CURDATE()) - anio_nacimiento) BETWEEN 18 AND 65 THEN 'Medio'
-                        ELSE 'Jubilados'
+                        WHEN (YEAR(CURDATE()) - anio_nacimiento) < 18 THEN 'Menores de 18'
+                        WHEN (YEAR(CURDATE()) - anio_nacimiento) BETWEEN 18 AND 65 THEN 'Adultos (18-65)'
+                        ELSE 'Mayores de 65'
                     END AS grupo,
                     COUNT(*) AS cantidad
                 FROM usuarios
@@ -132,6 +142,7 @@ class AdminModel
 
         return $resultados;
     }
+
     public function getRendimientoUsuarios($filtro)
     {
         $condicion = $this->getCondicionFecha($filtro, 'pp.respondida_en');
