@@ -228,7 +228,8 @@ if (mostrarVacioSiCorresponde('graficoSexo', dataSexo)) {
             }]
         },
         options: {
-            responsive: true,
+            responsive: false,           // ← no que se adapte al contenedor
+            maintainAspectRatio: false,  // ← no que calcule el alto solo
             plugins: {
                 legend: { position: 'bottom' },
                 tooltip: {
@@ -258,7 +259,8 @@ if (mostrarVacioSiCorresponde('graficoEdad', dataEdad)) {
             }]
         },
         options: {
-            responsive: true,
+            responsive: false,          
+            maintainAspectRatio: false,
             plugins: {
                 legend: { position: 'bottom' },
                 tooltip: {
