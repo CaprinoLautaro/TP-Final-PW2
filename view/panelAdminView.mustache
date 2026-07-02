@@ -30,10 +30,10 @@
     <div class="filtros-container no-print">
         <span class="filtros-titulo">Período:</span>
         <div class="filtros-links">
-            <a href="index.php?controller=admin&method=index&filtro=dia">Hoy</a>
-            <a href="index.php?controller=admin&method=index&filtro=semana">Esta Semana</a>
-            <a href="index.php?controller=admin&method=index&filtro=mes">Este Mes</a>
-            <a href="index.php?controller=admin&method=index&filtro=anio">Este Año</a>
+            <a href="index.php?controller=admin&method=index&filtro=dia" class="{{#filtro_dia}}activo{{/filtro_dia}}">Hoy</a>
+            <a href="index.php?controller=admin&method=index&filtro=semana" class="{{#filtro_semana}}activo{{/filtro_semana}}">Esta Semana</a>
+            <a href="index.php?controller=admin&method=index&filtro=mes" class="{{#filtro_mes}}activo{{/filtro_mes}}">Este Mes</a>
+            <a href="index.php?controller=admin&method=index&filtro=anio" class="{{#filtro_anio}}activo{{/filtro_anio}}">Este Año</a>
         </div>
     </div>
 
@@ -98,11 +98,13 @@
         <div class="graficos-doble">
             <div class="grafico-donut-bloque">
                 <h3 class="grafico-subtitulo">Por Sexo</h3>
-                <canvas id="graficoSexo"></canvas>
+                <canvas id="graficoSexo" width="160" height="160"></canvas>
+                <ul class="leyenda-custom" id="leyendaSexo"></ul>
             </div>
             <div class="grafico-donut-bloque">
                 <h3 class="grafico-subtitulo">Por Edad</h3>
-                <canvas id="graficoEdad"></canvas>
+                <canvas id="graficoEdad" width="160" height="160"></canvas>
+                <ul class="leyenda-custom" id="leyendaEdad"></ul>
             </div>
         </div>
     </div>
@@ -215,6 +217,21 @@ if (mostrarVacioSiCorresponde('graficoPais', dataPais)) {
     });
 }
 
+function crearLeyendaCustom(ulId, datos, colores, campoLabel) {
+    const ul = document.getElementById(ulId);
+    ul.innerHTML = '';
+    datos.forEach((d, i) => {
+        const li = document.createElement('li');
+        const cantidad = d.cantidad;
+        const palabra = cantidad === 1 ? 'usuario' : 'usuarios';
+        li.innerHTML = `
+            <span class="leyenda-punto" style="background:${colores[i % colores.length]}"></span>
+            ${d[campoLabel]}: ${cantidad} ${palabra} (${d.porcentaje}%)
+        `;
+        ul.appendChild(li);
+    });
+}
+
 // ── Donut: Sexo ──
 if (mostrarVacioSiCorresponde('graficoSexo', dataSexo)) {
     new Chart(document.getElementById('graficoSexo'), {
@@ -228,10 +245,10 @@ if (mostrarVacioSiCorresponde('graficoSexo', dataSexo)) {
             }]
         },
         options: {
-            responsive: false,           // ← no que se adapte al contenedor
-            maintainAspectRatio: false,  // ← no que calcule el alto solo
+            responsive: false,
+            maintainAspectRatio: false,
             plugins: {
-                legend: { position: 'bottom' },
+                legend: { display: false },   // ← ahora se dibuja afuera
                 tooltip: {
                     callbacks: {
                         label: ctx => {
@@ -244,25 +261,27 @@ if (mostrarVacioSiCorresponde('graficoSexo', dataSexo)) {
             }
         }
     });
+    crearLeyendaCustom('leyendaSexo', dataSexo, COLORES, 'sexo');
 }
 
 // ── Donut: Edad ──
 if (mostrarVacioSiCorresponde('graficoEdad', dataEdad)) {
+    const coloresEdad = [COLORES[1], COLORES[2], COLORES[3]];
     new Chart(document.getElementById('graficoEdad'), {
         type: 'doughnut',
         data: {
             labels: dataEdad.map(d => d.grupo),
             datasets: [{
                 data: dataEdad.map(d => d.cantidad),
-                backgroundColor: [COLORES[1], COLORES[2], COLORES[3]],
+                backgroundColor: coloresEdad,
                 borderWidth: 0,
             }]
         },
         options: {
-            responsive: false,          
+            responsive: false,
             maintainAspectRatio: false,
             plugins: {
-                legend: { position: 'bottom' },
+                legend: { display: false },
                 tooltip: {
                     callbacks: {
                         label: ctx => {
@@ -275,6 +294,7 @@ if (mostrarVacioSiCorresponde('graficoEdad', dataEdad)) {
             }
         }
     });
+    crearLeyendaCustom('leyendaEdad', dataEdad, coloresEdad, 'grupo');
 }
 
 // ── Barras: Rendimiento ──

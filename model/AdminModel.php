@@ -58,7 +58,6 @@ class AdminModel
 
     public function getTotalPreguntas()
     {
-        // Cuenta todas las filas de la tabla preguntas
         $resultado = $this->database->query("SELECT COUNT(*) AS total FROM preguntas");
         return $resultado[0]['total'] ?? 0;
     }
@@ -124,15 +123,15 @@ class AdminModel
 
         $sql = "SELECT 
                     CASE 
-                        WHEN (YEAR(CURDATE()) - anio_nacimiento) < 18 THEN 'Menores de 18'
-                        WHEN (YEAR(CURDATE()) - anio_nacimiento) BETWEEN 18 AND 65 THEN 'Adultos (18-65)'
-                        ELSE 'Mayores de 65'
+                        WHEN (YEAR(CURDATE()) - anio_nacimiento) < 18 THEN 'Menores'
+                        WHEN (YEAR(CURDATE()) - anio_nacimiento) BETWEEN 18 AND 64 THEN 'Medio'
+                        ELSE 'Jubilados'
                     END AS grupo,
                     COUNT(*) AS cantidad
                 FROM usuarios
                 WHERE 1=1" . $condicion . "
                 GROUP BY grupo
-                ORDER BY cantidad DESC";
+                ORDER BY grupo";
 
         $resultados = $this->database->query($sql);
 

@@ -225,12 +225,41 @@ body {
 .grafico-donut-bloque canvas {
     width: 160px !important;
     height: 160px !important;
+    flex-shrink: 0;
 }
 
 .tabla-y-grafico {
     display: flex;
     flex-direction: column;  
     gap: 1.5rem;
+}
+
+.filtros-links a.activo {
+    background: var(--accent);
+    color: #fff;
+    border-color: var(--accent);
+}
+
+.leyenda-custom {
+    list-style: none;
+    width: 100%;
+    align-self: flex-start;
+}
+
+.leyenda-custom li {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.85rem;
+    padding: 3px 0;
+    color: var(--text);
+}
+
+.leyenda-punto {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    flex-shrink: 0;
 }
 
 @media (max-width: 600px) {

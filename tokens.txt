@@ -22,3 +22,6 @@ TOKEN: 38fe8f
 EMAIL: maca.rodriguez1310@gmail.com
 TOKEN: ad5638
 ------------------
+EMAIL: sofia.mercado1606@gmail.com
+TOKEN: 674f2c
+------------------

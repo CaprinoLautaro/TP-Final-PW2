@@ -34,6 +34,11 @@ class AdminController {
             "json_sexo"        => json_encode($usuariosSexo),
             "json_edad"        => json_encode($usuariosEdad),
             "json_rendimiento" => json_encode($rendimiento),
+
+            "filtro_dia"    => $filtro === 'dia',
+            "filtro_semana" => $filtro === 'semana',
+            "filtro_mes"    => $filtro === 'mes',
+            "filtro_anio"   => $filtro === 'anio',
         ]);
     }
 }
