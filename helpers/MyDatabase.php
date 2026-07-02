@@ -4,14 +4,13 @@ class MyDatabase
 {
     private $conexion;
 
-    public function __construct($hostname, $username, $password, $database, $port = 3307)
+    public function __construct($hostname, $username, $password, $database)
     {
         $this->conexion = new mysqli(
             $hostname,
             $username,
             $password,
             $database,
-            $port,
         );
 
         $this->conexion->set_charset("utf8mb4");
